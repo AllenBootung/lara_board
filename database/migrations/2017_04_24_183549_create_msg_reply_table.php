@@ -14,11 +14,11 @@ class CreateMsgReplyTable extends Migration
     public function up()
     {
         Schema::create('msg_reply', function (Blueprint $table) {
-                    $table->increments('REPLY_NO');
-                    $table->integer('MSG_NO');
-                    $table->integer('PERSON_NO');
-                    $table->string('REPLY_CONTENT', 30); // 新增
-                    $table->string('REPLY_TIME', 20);
+            $table->increments('REPLY_NO');
+            $table->integer('MSG_NO');
+            $table->integer('PERSON_NO');
+            $table->string('REPLY_MESSAGE', 30); // 新增
+            $table->string('REPLY_TIME', 20);
         });
     }
 

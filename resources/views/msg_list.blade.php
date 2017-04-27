@@ -12,9 +12,14 @@
         <link rel="stylesheet" href={{ URL::asset('resources/assets/AdminLTE-2.3.11/dist/css/AdminLTE.css') }}>
         <link rel="stylesheet" href={{ URL::asset('resources/assets/AdminLTE-2.3.11/dist/css/skins/_all-skins.min.css') }}>
 
+
+        <link rel="stylesheet" href="{{ URL::asset('resources/assets/AdminLTE-2.3.11/plugins/datatables/dataTables.bootstrap.css')}}">
+        
+
         <script src={{ URL::asset('resources/assets/AdminLTE-2.3.11/plugins/jQuery/jquery-2.2.3.min.js') }}></script>
         <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
         <script src={{ URL::asset('resources/assets/AdminLTE-2.3.11/bootstrap/js/bootstrap.min.js') }}></script>
+        <script src="{{ URL::asset('resources/assets/AdminLTE-2.3.11/plugins/datatables/jquery.dataTables.min.js')}}"></script>
 
         <title>Laravel</title>
 
@@ -40,8 +45,7 @@
                         <tr style="display: inline;">
                           討論區
                         </tr>
-                      </div>
-                        <!-- /.panel-heading -->
+                      </div><!-- /.panel-heading -->
                       <div class="panel-body">
                         <div class="dataTable_wrapper">
                           <table class="table table-striped table-bordered table-hover table-condensed" id="dataTables-example">
@@ -68,8 +72,6 @@
                             </tbody>
                           </table>
                         </div>
-                       
-                        
                       </div><!-- /.panel-body -->
                     </div><!-- /.panel -->
                   </div><!-- /.col-lg-12 -->
@@ -79,40 +81,38 @@
 
           </div><!-- /#wrapper -->
 
-          
-          
         </form>
 
         <script>
-              $(document).ready(function() {
-                  $('#dataTables-example').DataTable({
-                          responsive: true,
-                          "language": {
-                          
-                                          "sProcessing":   "處理中...",
-                                          "sLengthMenu":   "顯示 _MENU_ 項結果",
-                                          "sZeroRecords":  " ",
-                                          "sInfo":         "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
-                                          "sInfoEmpty":    "顯示第 0 至 0 項結果，共 0 項",
-                                          "sInfoFiltered": "(從 _MAX_ 項結果過濾)",
-                                          "sInfoPostFix":  "",
-                                          "sSearch":       "搜索:",
-                                          "sUrl":          "",
-                                          "oPaginate": {
-                                              "sFirst":    "首頁",
-                                              "sPrevious": "上頁",
-                                              "sNext":     "下頁",
-                                              "sLast":     "尾頁"
-                                          }
-                                      }
-                          
-                  });
+            $(document).ready(function() {
+                $('#dataTables-example').DataTable({
+                        responsive: true,
+                        "language": {
+                        
+                                        "sProcessing":   "處理中...",
+                                        "sLengthMenu":   "顯示 _MENU_ 項結果",
+                                        "sZeroRecords":  " ",
+                                        "sInfo":         "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+                                        "sInfoEmpty":    "顯示第 0 至 0 項結果，共 0 項",
+                                        "sInfoFiltered": "(從 _MAX_ 項結果過濾)",
+                                        "sInfoPostFix":  "",
+                                        "sSearch":       "搜索:",
+                                        "sUrl":          "",
+                                        "oPaginate": {
+                                            "sFirst":    "首頁",
+                                            "sPrevious": "上頁",
+                                            "sNext":     "下頁",
+                                            "sLast":     "尾頁"
+                                        }
+                                    }
+                        
+                });
 
-                  $('#dataTables-example_length').append(
-                    ' <input type="button" class="btn btn-warning btn-sm" id="btn_add" value="增" onclick="location.href=\'project_list_board_detail.php\'"/>'
+                $('#dataTables-example_length').append(
+                  '<a class="btn btn-warning btn-sm" id="btn_add" href="./msg/add">增</a>'
 
-                  );//$('#dataTables-example_length').append(
-              });
+                );//$('#dataTables-example_length').append(
+            });
         </script>
     </body>
 </html>
