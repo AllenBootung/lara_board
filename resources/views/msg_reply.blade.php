@@ -61,7 +61,11 @@
                       
                     </div><!-- /.col-lg-12 -->
                   </div><!-- /.row -->
-                
+
+                  @if ( isset($add_title) )
+                    <input type="text" class="form-control" name="MSG_TITLE">
+                  @endif
+                  
                   <section class="row" style="margin-top:10px;">
                       <div class="panel panel-primary">
                         <div class="panel-heading">
