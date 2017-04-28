@@ -35,6 +35,28 @@ class Msg extends Controller
     	return View::make('msg_list')->with(compact("results"));
 		}
 
+		//列表編輯或刪除
+		public function changeMsgList()
+		{
+			//編輯
+			
+			if ( Input::has('SAVE_EDIT')  ) {
+				if ( Input::has('MSG_TITLE')  ) {
+			    $msg_title = Input::get('MSG_TITLE');
+			    $msg_no = Input::get('MSG_NO');
+			
+			    DB::table('msg_list')
+			      ->where('MSG_NO', $msg_no)
+			      ->update( ['MSG_TITLE' => $msg_title]
+			      				)
+			      ;
+			     // Redirect('/msg_list');
+				}
+		  } 
+
+		  return Redirect('/msg');
+		}
+
 		public function showMsgDetail($id)
 		{
 			$results = DB::table('msg_reply')
@@ -114,7 +136,7 @@ class Msg extends Controller
 			               ->get(); 
 
 			  // return View::make('msg_reply')->with( compact("results") );
-			  return Redirect::to('/msg/'.$id)->with(compact("msg"));        
+			  return Redirect('/msg/'.$id)->with(compact("msg"));        
 			}     
 		}
 

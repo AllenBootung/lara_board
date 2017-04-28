@@ -66,6 +66,7 @@
                       <tbody>
                         @foreach($results as $result)
                           <tr>
+                            <input type="hidden" id="MSG_NO" name="MSG_NO" value="{{$result->MSG_NO}}">
                             <td >
                                 <input type="button" class="btn btn-success btn-xs btn_edit" value="編">
                                 <input type="button" class="btn btn-danger btn-xs btn_del" value="刪">
@@ -93,8 +94,10 @@
       <script type="text/javascript">
         $(".btn_edit").click(function(){
           $("#wrapper").find("input").attr("disabled","true");
+          $(this).parent().siblings("#MSG_NO").removeAttr("disabled");
+
           $(this).parent().siblings("#MSG_TITLE").html(
-            '<input class="form-contrl mustfill" value="'+
+            '<input class="form-contrl mustfill" name="MSG_TITLE" value="'+
               $(this).parent().siblings("#MSG_TITLE").children("a").html()+
             '"/>'
           );

@@ -34,8 +34,9 @@ Route::get('/', function () {
 //     return $id;
 // })->where('id', '[0-9].+');
 Route::get('/msg',"Msg@showMsgList");
-Route::get('/msg/{id?}', "Msg@showMsgDetail");
+Route::post('/msg',"Msg@changeMsgList");
 
+Route::get('/msg/{id?}', "Msg@showMsgDetail");
 Route::post('/msg/{id?}', "Msg@replyMsg");
 
 
