@@ -78,8 +78,8 @@ Route::post('/msg/{id?}', function($id)
 
         //get last MSG_NO
         $results = DB::table('msg_list')
-                    ->select('MSG_NO')
-                    ->orderBy('MSG_NO', 'desc')->first();
+                     ->select('MSG_NO')
+                     ->orderBy('MSG_NO', 'desc')->first();
         if ($results) 
           $msg_no = $results->MSG_NO +1;
         else 
