@@ -125,6 +125,18 @@
             
         }//function all_check()
       </script>
+      <script type="text/javascript">
+        $(".btn_del").click(function(){
+            $("#wrapper").find("input").attr("disabled","true");
+            $(this).parent().siblings("#MSG_NO").removeAttr("disabled");
+
+            $(this).parent().html(
+              '<input type="button" class="btn btn-default btn-xs" value="消" onclick="window.location.href = window.location.pathname + window.location.search;"/>'+
+              '<input type="submit" class="btn btn-danger btn-xs" id="btn_delee_submit" name="DEL_LIST" value="是"/>'
+            );
+            
+          });//$("#btn_delete").click(function()
+      </script>
       <script>
           $(document).ready(function() {
               $('#dataTables-example').DataTable({

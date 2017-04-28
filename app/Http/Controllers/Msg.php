@@ -54,6 +54,20 @@ class Msg extends Controller
 				}
 		  } 
 
+
+	  	if ( Input::has('DEL_LIST')  ) {
+	  		if ( Input::has('MSG_NO')  ) {
+	  	    $msg_no = Input::get('MSG_NO');
+	  	
+	  	    DB::table('msg_list')
+	  	      ->where('MSG_NO', $msg_no)
+	  	      ->delete()
+	  	      ;
+	  	     // Redirect('/msg_list');
+	  		}
+	    } 
+		  
+
 		  return Redirect('/msg');
 		}
 
