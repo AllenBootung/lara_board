@@ -39,43 +39,41 @@
         {{ csrf_field() }}
         <div id="wrapper">
 
-          <!-- Navigation -->
           <div id="page-wrapper" class="col-md-12">
-
-            
-              
-                
               <div class="panel panel-primary">
                 <div class="panel-heading" style="text-align: center;">
                   <tr style="display: inline;">
                     討論區
                   </tr>
-                </div><!-- /.panel-heading -->
+                </div>
                 <div class="panel-body">
+                    <div style="text-align: center;">
+                      <a class="btn btn-warning btn-sm" id="btn_add" href="./msg/add">增</a>
+                    </div>
                     <table class="table" style="margin:0 auto;">
-                      
+                        
                         <tr class="bg-blue"> 
                           <th>功能</th>
-                          <th >開始時間</th>
-                          <th >議題</th>
-                          <th >內容</th>
-                          <th >回應數</th>
-                          <th >結束時間</th>
+                          <th>開始時間</th>
+                          <th>議題</th>
+                          <th>內容</th>
+                          <th>回應數</th>
+                          <th>結束時間</th>
                         </tr>
                      
                       <tbody>
                         @foreach($results as $result)
                           <tr>
                             <input type="hidden" id="MSG_NO" name="MSG_NO" value="{{$result->MSG_NO}}">
-                            <td >
+                            <td>
                                 <input type="button" class="btn btn-success btn-xs btn_edit" value="編">
                                 <input type="button" class="btn btn-danger btn-xs btn_del" value="刪">
                             </td>
-                            <td >{{$result->MSG_TIME}}</td>
+                            <td>{{$result->MSG_TIME}}</td>
                             <td class="align-left" id="MSG_TITLE"><a href="msg/{{$result->MSG_NO}}">{{$result->MSG_TITLE}}</a></td>
                             <td class="align-left"></td>
-                            <td >{{$result->REPLY_COUNT}}</td>
-                            <td >{{$result->REPLY_TIME}}</td>
+                            <td>{{$result->REPLY_COUNT}}</td>
+                            <td>{{$result->REPLY_TIME}}</td>
                           </tr>
                         @endforeach
                       </tbody>
@@ -83,8 +81,7 @@
                   
                 </div><!-- /.panel-body -->
               </div><!-- /.panel -->
-                
-              
+                              
             
           </div><!-- /#page-wrapper -->
 
@@ -137,36 +134,6 @@
             
           });//$("#btn_delete").click(function()
       </script>
-      <script>
-          $(document).ready(function() {
-              $('#dataTables-example').DataTable({
-                      responsive: true,
-                      "language": {
-                      
-                                      "sProcessing":   "處理中...",
-                                      "sLengthMenu":   "顯示 _MENU_ 項結果",
-                                      "sZeroRecords":  " ",
-                                      "sInfo":         "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
-                                      "sInfoEmpty":    "顯示第 0 至 0 項結果，共 0 項",
-                                      "sInfoFiltered": "(從 _MAX_ 項結果過濾)",
-                                      "sInfoPostFix":  "",
-                                      "sSearch":       "搜索:",
-                                      "sUrl":          "",
-                                      "oPaginate": {
-                                          "sFirst":    "首頁",
-                                          "sPrevious": "上頁",
-                                          "sNext":     "下頁",
-                                          "sLast":     "尾頁"
-                                      }
-                                  }
-                      
-              });
-
-              $('#dataTables-example_length').append(
-                '<a class="btn btn-warning btn-sm" id="btn_add" href="./msg/add">增</a>'
-
-              );//$('#dataTables-example_length').append(
-          });
-      </script>
+      
     </body>
 </html>

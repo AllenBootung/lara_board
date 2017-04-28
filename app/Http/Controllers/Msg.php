@@ -10,7 +10,8 @@ use Redirect;
 class Msg extends Controller
 {
     
-		public function index( ){
+		public function index()
+		{
 			// return "index";
 			  //   Route::get('/{id?}', function ($id=123) {
 					//     return $id;
@@ -39,7 +40,6 @@ class Msg extends Controller
 		public function changeMsgList()
 		{
 			//編輯
-			
 			if ( Input::has('SAVE_EDIT')  ) {
 				if ( Input::has('MSG_TITLE')  ) {
 			    $msg_title = Input::get('MSG_TITLE');
@@ -66,7 +66,6 @@ class Msg extends Controller
 	  	     // Redirect('/msg_list');
 	  		}
 	    } 
-		  
 
 		  return Redirect('/msg');
 		}
@@ -74,7 +73,7 @@ class Msg extends Controller
 		public function showMsgDetail($id)
 		{
 			$results = DB::table('msg_reply')
-		               ->select( 'REPLY_MESSAGE', 'REPLY_TIME', 'msg_reply.PERSON_NO' , 'msg_list.MSG_TITLE') 
+		               ->select( 'msg_reply.REPLY_NO', 'REPLY_MESSAGE', 'REPLY_TIME', 'msg_reply.PERSON_NO' , 'msg_list.MSG_TITLE') 
 		               ->leftjoin('msg_list', 'msg_reply.MSG_NO' , '=', 'msg_list.MSG_NO')
 		               ->where('msg_reply.MSG_NO', '=', $id)
 		               ->get(); 
@@ -127,22 +126,55 @@ class Msg extends Controller
 
 			} else {
 
+				//新留言
+				if ( Input::has('SAVE_ADD')  ) {
+				  if ( Input::has('REPLY_MESSAGE')  ) {
+				    $reply_message = Input::get('REPLY_MESSAGE');
+				    
+				    DB::table('msg_reply')
+				      ->insert( array('REPLY_MESSAGE' => $reply_message ,
+				      	              'MSG_NO' => $id ,
+				      	              'PERSON_NO' => '1' ,
+				      	              'REPLY_TIME' => date("Y-m-d H:i:s")
+				      	              ) 
+				      				);
+				    $msg = "回覆成功";
 
-			  if ( Input::has('REPLY_MESSAGE')  ) {
-			    $reply_message = Input::get('REPLY_MESSAGE');
-			    
-			    DB::table('msg_reply')
-			      ->insert( array('REPLY_MESSAGE' => $reply_message ,
-			      	              'MSG_NO' => $id ,
-			      	              'PERSON_NO' => '1' ,
-			      	              'REPLY_TIME' => date("Y-m-d H:i:s")
-			      	              ) 
-			      				);
-			    $msg = "回覆成功";
+				  } else {
+				    $msg = "請輸入標題及訊息內容";
+				  }
+				}
 
-			  } else {
-			    $msg = "請輸入標題及訊息內容";
-			  }
+			  //修改留言
+	  		if ( Input::has('SAVE_EDIT')  ) {
+	  			if ( Input::has('REPLY_MESSAGE')  ) {
+	  		    $reply_message = Input::get('MSG_MESSAGE');
+	  		    $reply_no = Input::get('REPLY_NO');
+	  		
+	  		    DB::table('msg_reply')
+	  		      ->where('REPLY_NO', $reply_no)
+	  		      ->update( ['REPLY_MESSAGE' => $reply_message,
+	  		      					 'REPLY_TIME'	=> date("Y-m-d H:i:s")
+	  		      					]
+	  		      				)
+	  		      ;
+	  		     // Redirect('/msg_list');
+	  			}
+	  	  } 
+
+	  	  //刪除留言
+	    	if ( Input::has('DEL_LIST')  ) {
+	    		if ( Input::has('REPLY_NO')  ) {
+	    	    $reply_no = Input::get('REPLY_NO');
+	    	
+	    	    DB::table('msg_reply')
+	    	      ->where('REPLY_NO', $reply_no)
+	    	      ->delete()
+	    	      ;
+	    	     // Redirect('/msg_list');
+	    		}
+	      } 
+
 
 			  $results = DB::table('msg_reply')
 			               ->select( 'REPLY_MESSAGE', 'REPLY_TIME', 'msg_reply.PERSON_NO' , 'msg_list.MSG_TITLE') 
@@ -152,6 +184,8 @@ class Msg extends Controller
 			  // return View::make('msg_reply')->with( compact("results") );
 			  return Redirect('/msg/'.$id)->with(compact("msg"));        
 			}     
+
+			
 		}
 
 }
