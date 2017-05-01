@@ -19,6 +19,7 @@ class Msg extends Controller
 			return view('welcome');
 		}
 
+		//顯示列表
     public function showMsgList()
     {
     	$results = DB::table('msg_list')
@@ -28,7 +29,8 @@ class Msg extends Controller
     	             					 'msg_list.PERSON_NO', 
     	             					 DB::raw('COUNT(msg_reply.REPLY_NO) as REPLY_COUNT'),
     	             					 DB::raw('MAX(msg_reply.REPLY_TIME) as REPLY_TIME')
-    	             					 )
+    	             					 
+    	             					)
     	             ->leftjoin('msg_reply', 'msg_list.MSG_NO', '=', 'msg_reply.MSG_NO')
     	             ->groupBy('msg_list.MSG_NO')
     	             ->get();
@@ -70,6 +72,7 @@ class Msg extends Controller
 		  return Redirect('/msg');
 		}
 
+		//留言版
 		public function showMsgDetail($id)
 		{
 			$results = DB::table('msg_reply')
@@ -86,9 +89,10 @@ class Msg extends Controller
 		  }
 		}
 
-
+		//新增修改刪除留言
 		public function replyMsg($id)
 		{
+			//新發文
 			if ($id == "add") {
 			    
 			    if ( Input::has('MSG_TITLE') && Input::has('REPLY_MESSAGE')  ) {
@@ -147,8 +151,10 @@ class Msg extends Controller
 
 			  //修改留言
 	  		if ( Input::has('SAVE_EDIT')  ) {
+	  			dd($_REQUEST);
 	  			if ( Input::has('REPLY_MESSAGE')  ) {
-	  		    $reply_message = Input::get('MSG_MESSAGE');
+	  		    $reply_message = Input::get('REPLY_MESSAGE');
+	  		    // dd($reply_message);
 	  		    $reply_no = Input::get('REPLY_NO');
 	  		
 	  		    DB::table('msg_reply')
