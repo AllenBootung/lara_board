@@ -12,16 +12,12 @@
                   </tr>
                 </div>
                 <div class="panel-body">
-                    <div style="text-align: center;">
-                      <a class="btn btn-warning btn-sm" id="btn_add" href="./msg/add">增</a>
-                    </div>
                     <table class="table" style="margin:0 auto;">
                         
                         <tr class="bg-blue"> 
                           <th>功能</th>
                           <th>開始時間</th>
                           <th>議題</th>
-                          <th>內容</th>
                           <th>回應數</th>
                           <th>結束時間</th>
                         </tr>

@@ -10,15 +10,6 @@ use Redirect;
 class Msg extends Controller
 {
     
-		public function index()
-		{
-			// return "index";
-			  //   Route::get('/{id?}', function ($id=123) {
-					//     return $id;
-					// });
-			return view('welcome');
-		}
-
 		//顯示列表
     public function showMsgList()
     {
@@ -60,6 +51,11 @@ class Msg extends Controller
 	  	if ( Input::has('DEL_LIST')  ) {
 	  		if ( Input::has('MSG_NO')  ) {
 	  	    $msg_no = Input::get('MSG_NO');
+
+	  	    DB::table('msg_reply')
+	  	      ->where('MSG_NO', $msg_no)
+	  	      ->delete()
+	  	      ;
 	  	
 	  	    DB::table('msg_list')
 	  	      ->where('MSG_NO', $msg_no)
