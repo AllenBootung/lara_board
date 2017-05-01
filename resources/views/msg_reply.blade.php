@@ -31,16 +31,16 @@
                   </div><!-- /.row -->
 
                   @if ( isset($add_title) )
-                    <input type="text" class="form-control" name="MSG_TITLE">
+                    <input type="text" class="form-control mustfill" name="MSG_TITLE">
                   @endif
                   
                   <section class="row" style="margin-top:10px;">
                       <div class="panel panel-primary">
                         <div class="panel-heading">
-                          <textarea class="form-control" rows="11" name="REPLY_MESSAGE"></textarea>
+                          <textarea class="form-control mustfill" rows="11" name="REPLY_MESSAGE"></textarea>
                         </div>
                       </div><!-- /.panel -->
-                      <input type="submit" name ="SAVE_ADD" class="btn btn-warning " value="增"/>
+                      <input type="submit" name ="SAVE_ADD" class="btn btn-warning " value="增" onclick="return all_check();"/>
                   </section>
               </div><!-- /#page-wrapper -->
             </div>
