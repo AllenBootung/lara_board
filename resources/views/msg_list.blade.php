@@ -32,7 +32,6 @@
                             </td>
                             <td>{{$result->MSG_TIME}}</td>
                             <td class="align-left" id="MSG_TITLE" style="overflow:hidden;"><a href="msg/{{$result->MSG_NO}}">{{$result->MSG_TITLE}}</a></td>
-                            <td class="align-left" style="overflow:hidden;"></td>
                             <td>{{$result->REPLY_COUNT}}</td>
                             <td>{{$result->REPLY_TIME}}</td>
                           </tr>

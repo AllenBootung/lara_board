@@ -46,7 +46,7 @@
       
     </div>
 
-    <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="70">
+    <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="70" style="background: rgba(1,1,1,0.75);">
       <ul class="nav navbar-nav">
         <li class="active"><a href="{{url('/msg')}}">討論區</a></li>
         <li><a href="{{url('/msg/add')}}">發新主題</a></li>
