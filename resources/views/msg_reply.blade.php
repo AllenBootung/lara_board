@@ -18,13 +18,9 @@
                               <input type="button" class="btn btn-success btn-xs btn_edit" value="編">
                               <input type="button" class="btn btn-danger btn-xs btn_del" value="刪">
                               {{ $result->REPLY_TIME}}
-                          </div><!-- /.pnel-heading -->
+                          </div>
                           
-                          <div class="panel-body" id="REPLY_MESSAGE">
-                            
-                              {{ $result->REPLY_MESSAGE}}
-                            
-                          </div><!-- /.panel-body -->
+                          <div class="panel-body" id="REPLY_MESSAGE">{{ $result->REPLY_MESSAGE}}</div>
                           
                         </div>
                       @endforeach                                         
@@ -34,7 +30,7 @@
                     <input type="text" class="form-control mustfill" name="MSG_TITLE">
                   @endif
                   
-                  <section class="row" style="margin-top:10px;">
+                  <section class="row" id="reply_area" style="margin-top:10px;">
                       <div class="panel panel-primary">
                         <div class="panel-heading">
                           <textarea class="form-control mustfill" rows="11" name="REPLY_MESSAGE"></textarea>
@@ -51,11 +47,10 @@
           $(".btn_edit").click(function(){
             $("#wrapper").find("input").attr("disabled","true");
             $(this).parent().siblings("#REPLY_NO").removeAttr("disabled");
+            $("#reply_area").remove();
 
             $(this).parent().siblings("#REPLY_MESSAGE").html(
-              '<textarea class="form-control mustfill" name="REPLY_MESSAGE">'+
-                $(this).parent().siblings("#REPLY_MESSAGE").html()+
-              '</textarea>'
+              '<textarea class="form-control mustfill" name="REPLY_MESSAGE">'+$(this).parent().siblings("#REPLY_MESSAGE").html()+'</textarea>'
             );
 
             $(this).parent().html(
@@ -69,7 +64,7 @@
           {
               all_fill = true;
               $(".mustfill").each(function(){
-                if ($(this).val()==""){
+                if (!$(this).val()){
                   all_fill = false;
                   $(this).addClass("not_fill");
                   

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use App\Http\Controllers\Controller;
 use DB;
 use View;
 use Redirect;
@@ -24,7 +25,9 @@ class Msg extends Controller
     	             					)
     	             ->leftjoin('msg_reply', 'msg_list.MSG_NO', '=', 'msg_reply.MSG_NO')
     	             ->groupBy('msg_list.MSG_NO')
-    	             ->get();
+    	             
+    	             ->get()
+    	             ;
 
     	return View::make('msg_list')->with(compact("results"));
 		}
@@ -147,10 +150,10 @@ class Msg extends Controller
 
 			  //修改留言
 	  		if ( Input::has('SAVE_EDIT')  ) {
-	  			dd($_REQUEST);
+	  			
 	  			if ( Input::has('REPLY_MESSAGE')  ) {
 	  		    $reply_message = Input::get('REPLY_MESSAGE');
-	  		    // dd($reply_message);
+	  		    
 	  		    $reply_no = Input::get('REPLY_NO');
 	  		
 	  		    DB::table('msg_reply')
