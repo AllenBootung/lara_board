@@ -25,10 +25,9 @@ class Msg extends Controller
     	             					)
     	             ->leftjoin('msg_reply', 'msg_list.MSG_NO', '=', 'msg_reply.MSG_NO')
     	             ->groupBy('msg_list.MSG_NO')
-    	             
-    	             ->get()
+    	             ->paginate(5)
     	             ;
-
+    	// $results::paginate(5);
     	return View::make('msg_list')->with(compact("results"));
 		}
 
@@ -78,7 +77,7 @@ class Msg extends Controller
 		               ->select( 'msg_reply.REPLY_NO', 'REPLY_MESSAGE', 'REPLY_TIME', 'msg_reply.PERSON_NO' , 'msg_list.MSG_TITLE') 
 		               ->leftjoin('msg_list', 'msg_reply.MSG_NO' , '=', 'msg_list.MSG_NO')
 		               ->where('msg_reply.MSG_NO', '=', $id)
-		               ->get(); 
+		               ->paginate(5); 
 		  
 		  if ($id=="add") {
 		    $add_title = ["foo" => "bar"];

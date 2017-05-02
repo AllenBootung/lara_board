@@ -24,7 +24,8 @@
                           
                         </div>
                       @endforeach                                         
-                  </div><!-- /.row -->
+                  </div>
+                  {{ $results->links() }}
 
                   @if ( isset($add_title) )
                     <input type="text" class="form-control mustfill" name="MSG_TITLE">

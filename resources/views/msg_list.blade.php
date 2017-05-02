@@ -42,7 +42,7 @@
                 </div><!-- /.panel-body -->
               </div><!-- /.panel -->
                               
-            
+              {{ $results->links() }}
           </div><!-- /#page-wrapper -->
 
         </div><!-- /#wrapper -->
