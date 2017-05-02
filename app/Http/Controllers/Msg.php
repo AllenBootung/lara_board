@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+
 use DB;
 use View;
 use Redirect;
@@ -32,11 +34,20 @@ class Msg extends Controller
 		}
 
 		//列表編輯或刪除
-		public function changeMsgList()
+		public function changeMsgList(Request $request)
 		{
+			
+
 			//編輯
 			if ( Input::has('SAVE_EDIT')  ) {
-				if ( Input::has('MSG_TITLE')  ) {
+				$v = Validator::make($request->all(), [
+				        'MSG_TITLE' => 'required'
+				     ]);
+				if ($v->fails()) {
+				        return redirect()->back()->withErrors($v->errors());
+				}
+
+				if ( Input::has('MSG_TITLE') ) {
 			    $msg_title = Input::get('MSG_TITLE');
 			    $msg_no = Input::get('MSG_NO');
 			
@@ -51,6 +62,12 @@ class Msg extends Controller
 
 
 	  	if ( Input::has('DEL_LIST')  ) {
+	  		$v = Validator::make($request->all(), [
+	  		        'MSG_NO' => 'required'
+	  		     ]);
+	  		if ($v->fails()) {
+	  		        return redirect()->back()->withErrors($v->errors());
+	  		}
 	  		if ( Input::has('MSG_NO')  ) {
 	  	    $msg_no = Input::get('MSG_NO');
 
@@ -88,11 +105,18 @@ class Msg extends Controller
 		}
 
 		//新增修改刪除留言
-		public function replyMsg($id)
+		public function replyMsg($id, Request $request)
 		{
 			//新發文
 			if ($id == "add") {
-			    
+			    $v = Validator::make($request->all(), [
+			            'MSG_TITLE' => 'required',
+			            'REPLY_MESSAGE' => 'required'
+			         ]);
+			    if ($v->fails()) {
+			            return redirect()->back()->withErrors($v->errors());
+			    }
+
 			    if ( Input::has('MSG_TITLE') && Input::has('REPLY_MESSAGE')  ) {
 			      $msg_title = Input::get('MSG_TITLE');
 
@@ -130,6 +154,12 @@ class Msg extends Controller
 
 				//新留言
 				if ( Input::has('SAVE_ADD')  ) {
+					$v = Validator::make($request->all(), [
+					        'REPLY_MESSAGE' => 'required'
+					     ]);
+					if ($v->fails()) {
+					        return redirect()->back()->withErrors($v->errors());
+					}
 				  if ( Input::has('REPLY_MESSAGE')  ) {
 				    $reply_message = Input::get('REPLY_MESSAGE');
 				    
@@ -149,7 +179,12 @@ class Msg extends Controller
 
 			  //修改留言
 	  		if ( Input::has('SAVE_EDIT')  ) {
-	  			
+	  			$v = Validator::make($request->all(), [
+	  			        'REPLY_MESSAGE' => 'required'
+	  			     ]);
+	  			if ($v->fails()) {
+	  			        return redirect()->back()->withErrors($v->errors());
+	  			}
 	  			if ( Input::has('REPLY_MESSAGE')  ) {
 	  		    $reply_message = Input::get('REPLY_MESSAGE');
 	  		    
@@ -168,6 +203,12 @@ class Msg extends Controller
 
 	  	  //刪除留言
 	    	if ( Input::has('DEL_LIST')  ) {
+	    		$v = Validator::make($request->all(), [
+	    		        'REPLY_NO' => 'required'
+	    		     ]);
+	    		if ($v->fails()) {
+	    		        return redirect()->back()->withErrors($v->errors());
+	    		}
 	    		if ( Input::has('REPLY_NO')  ) {
 	    	    $reply_no = Input::get('REPLY_NO');
 	    	
