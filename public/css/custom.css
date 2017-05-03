@@ -16,6 +16,7 @@ td.align-right {
 .not_fill {
   animation: blink .5s step-end infinite alternate;
   border-style: solid;
+  border-width: 3px;
 }
 @keyframes blink {
   50% {

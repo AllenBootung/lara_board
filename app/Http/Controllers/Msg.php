@@ -79,9 +79,16 @@ class Msg extends Controller
   	      ->delete()
   	      ;
 	  		
-	    } 
+	    }
 
-		  return Redirect('/msg');
+      //導向的分頁
+      if ( $request->input("page") ){
+      	$page = $request->input("page");
+	    	return Redirect::to('/msg' .'?page='. $page);  
+      } else {
+	    	return Redirect::to('/msg');  
+      }
+		  
 		}
 
 		//留言版顯示
@@ -108,6 +115,9 @@ class Msg extends Controller
 		//留言版 新增修改刪除
 		public function replyMsg($id, Request $request)
 		{
+			//處理存完後導分頁
+
+
 			//新發文
 			if ($id == "add") {
 			    $v = Validator::make($request->all(), [
@@ -216,8 +226,15 @@ class Msg extends Controller
 	    		}
 	      } 
 
+        //導向的分頁
+        if ( $request->input("page") ){
+        	$page = $request->input("page");
+  	    	return Redirect::to('/msg/'. $id .'?page='. $page)->with(compact("msg"));  
+        } else {
+  	    	return Redirect::to('/msg/'. $id)->with(compact("msg"));  
+        }
 
-			  return Redirect('/msg/'.$id)->with(compact("msg"));        
+			  
 			}     
 
 			
