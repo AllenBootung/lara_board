@@ -35,17 +35,15 @@ class Msg extends Controller
 		//列表編輯或刪除
 		public function changeMsgList(Request $request)
 		{
-			
 
 			//編輯
-			if ( Input::has('SAVE_EDIT')  ) {
+			if ( $request->has('SAVE_EDIT')  ) {
 				$v = Validator::make($request->all(), [
 				        'MSG_TITLE' => 'required'
 				     ]);
 				if ($v->fails()) {
-				        return redirect()->back()->withErrors($v->errors());
+				    return redirect()->back()->withErrors($v->errors());
 				}
-
 				
 		    $msg_title = $request->input('MSG_TITLE');
 		    $msg_no = $request->input('MSG_NO');
@@ -59,21 +57,23 @@ class Msg extends Controller
 		  } 
 
 		  //刪除
-	  	if ( Input::has('DEL_LIST')  ) {
+	  	if ( $request->has('DEL_LIST')  ) {
 	  		$v = Validator::make($request->all(), [
 	  		        'MSG_NO' => 'required'
 	  		     ]);
 	  		if ($v->fails()) {
-	  		        return redirect()->back()->withErrors($v->errors());
+	  		    return redirect()->back()->withErrors($v->errors());
 	  		}
 	  		
   	    $msg_no = $request->input('MSG_NO');
 
+  	    //刪除所有回應
   	    DB::table('msg_reply')
   	      ->where('MSG_NO', $msg_no)
   	      ->delete()
   	      ;
-  	
+
+  			//刪除議題
   	    DB::table('msg_list')
   	      ->where('MSG_NO', $msg_no)
   	      ->delete()
@@ -88,12 +88,16 @@ class Msg extends Controller
 		public function showMsgDetail($id)
 		{
 			$results = DB::table('msg_reply')
-		               ->select( 'msg_reply.REPLY_NO', 'REPLY_MESSAGE', 'REPLY_TIME', 'msg_reply.PERSON_NO' , 'msg_list.MSG_TITLE') 
+		               ->select( 'msg_reply.REPLY_NO', 
+		               					 'REPLY_MESSAGE', 
+		               					 'REPLY_TIME', 
+		               					 'msg_reply.PERSON_NO' , 
+		               					 'msg_list.MSG_TITLE') 
 		               ->leftjoin('msg_list', 'msg_reply.MSG_NO' , '=', 'msg_list.MSG_NO')
 		               ->where('msg_reply.MSG_NO', '=', $id)
 		               ->paginate(5); 
 		  
-		  if ($id=="add") {
+		  if ($id=="add") { //當網址是/add時新增議題，於前端顯示title輸入框
 		    $add_title = ["foo" => "bar"];
 		    return View::make('msg_reply')->with(compact("results", "add_title") );
 		  } else {
@@ -111,9 +115,8 @@ class Msg extends Controller
 			            'REPLY_MESSAGE' => 'required'
 			         ]);
 			    if ($v->fails()) {
-			            return redirect()->back()->withErrors($v->errors());
+			        return redirect()->back()->withErrors($v->errors());
 			    }
-
 			    
 		      $msg_title = $request->input('MSG_TITLE');
 
@@ -129,9 +132,8 @@ class Msg extends Controller
 		      //新增標題
 		      DB::table('msg_list')
 		        ->insert( ['MSG_TITLE' => $msg_title ,
-		                        
-		                        'PERSON_NO' => '1' ,
-		                        'MSG_TIME' => date("Y-m-d H:i:s")
+		                   'PERSON_NO' => '1' ,
+		                   'MSG_TIME' => date("Y-m-d H:i:s")
 		                  ]
 		                );
 		    
@@ -139,9 +141,9 @@ class Msg extends Controller
 		      $reply_message = $request->input('REPLY_MESSAGE');
 		      DB::table('msg_reply')
 		        ->insert( ['REPLY_MESSAGE' => $reply_message ,
-		                        'MSG_NO' => $msg_no ,
-		                        'PERSON_NO' => '1' ,
-		                        'REPLY_TIME' => date("Y-m-d H:i:s")
+		                   'MSG_NO' => $msg_no ,
+		                   'PERSON_NO' => '1' ,
+		                   'REPLY_TIME' => date("Y-m-d H:i:s")
 		                  ] 
 		                );
 		    
@@ -152,34 +154,34 @@ class Msg extends Controller
 			} else {
 
 				//新留言
-				if ( Input::has('SAVE_ADD')  ) {
+				if ( $request->has('SAVE_ADD')  ) {
 					$v = Validator::make($request->all(), [
 					        'REPLY_MESSAGE' => 'required'
 					     ]);
 					if ($v->fails()) {
-					        return redirect()->back()->withErrors($v->errors());
+					    return redirect()->back()->withErrors($v->errors());
 					}
 				  
 			    $reply_message = $request->input('REPLY_MESSAGE');
 			    
 			    DB::table('msg_reply')
 			      ->insert( ['REPLY_MESSAGE' => $reply_message ,
-			      	              'MSG_NO' => $id ,
-			      	              'PERSON_NO' => '1' ,
-			      	              'REPLY_TIME' => date("Y-m-d H:i:s")
+			      	         'MSG_NO' => $id ,
+			      	         'PERSON_NO' => '1' ,
+			      	         'REPLY_TIME' => date("Y-m-d H:i:s")
 			      	        ] 
 			      				);
 			    $msg = "回覆成功";
-
 				}
 
 			  //修改留言
-	  		if ( Input::has('SAVE_EDIT')  ) {
+	  		if ( $request->has('SAVE_EDIT')  ) {
 	  			$v = Validator::make($request->all(), [
-	  			        'REPLY_MESSAGE' => 'required'
+	  			        'REPLY_MESSAGE' => 'required',
+	  			        'REPLY_NO' => 'required'
 	  			     ]);
 	  			if ($v->fails()) {
-	  			        return redirect()->back()->withErrors($v->errors());
+	  			    return redirect()->back()->withErrors($v->errors());
 	  			}
 	  			
   		    $reply_message = $request->input('REPLY_MESSAGE');
@@ -197,14 +199,14 @@ class Msg extends Controller
 	  	  } 
 
 	  	  //刪除留言
-	    	if ( Input::has('DEL_LIST')  ) {
+	    	if ( $request->has('DEL_LIST')  ) {
 	    		$v = Validator::make($request->all(), [
 	    		        'REPLY_NO' => 'required'
 	    		     ]);
 	    		if ($v->fails()) {
-	    		        return redirect()->back()->withErrors($v->errors());
+	    		    return redirect()->back()->withErrors($v->errors());
 	    		}
-	    		if ( Input::has('REPLY_NO')  ) {
+	    		if ( $request->has('REPLY_NO')  ) {
 	    	    $reply_no = $request->input('REPLY_NO');
 	    	
 	    	    DB::table('msg_reply')
