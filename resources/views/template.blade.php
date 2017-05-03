@@ -34,6 +34,9 @@
     .affix + .container-fluid {
         padding-top: 70px;
     }
+    .navbar {
+       -webkit-backface-visibility: hidden;
+    }
     .panel-body {
       padding: 0;
     }
@@ -42,11 +45,11 @@
 <body>
 	<div class="header">
     <div class="container-fluid" style="background-color:#F44336;color:#fff;">
-      <h1>Laravel msg board</h1>
+      <h1>Laravel Msg Board</h1>
       
     </div>
 
-    <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="150" style="background: rgba(1,1,1,0.75);">
+    <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="70" style="background: rgba(1,1,1,0.75);">
       <ul class="nav navbar-nav">
         <li class="active"><a href="{{url('/msg')}}">討論區</a></li>
         <li><a href="{{url('/msg/add')}}">發新主題</a></li>
