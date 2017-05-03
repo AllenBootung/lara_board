@@ -29,7 +29,6 @@ class Msg extends Controller
     	             ->groupBy('msg_list.MSG_NO')
     	             ->paginate(5)
     	             ;
-    	// $results::paginate(5);
     	return View::make('msg_list')->with(compact("results"));
 		}
 
@@ -47,20 +46,19 @@ class Msg extends Controller
 				        return redirect()->back()->withErrors($v->errors());
 				}
 
-				if ( Input::has('MSG_TITLE') ) {
-			    $msg_title = Input::get('MSG_TITLE');
-			    $msg_no = Input::get('MSG_NO');
-			
-			    DB::table('msg_list')
-			      ->where('MSG_NO', $msg_no)
-			      ->update( ['MSG_TITLE' => $msg_title]
-			      				)
-			      ;
-			     // Redirect('/msg_list');
-				}
+				
+		    $msg_title = $request->input('MSG_TITLE');
+		    $msg_no = $request->input('MSG_NO');
+		
+		    DB::table('msg_list')
+		      ->where('MSG_NO', $msg_no)
+		      ->update( ['MSG_TITLE' => $msg_title]
+		      				)
+		      ;
+				
 		  } 
 
-
+		  //刪除
 	  	if ( Input::has('DEL_LIST')  ) {
 	  		$v = Validator::make($request->all(), [
 	  		        'MSG_NO' => 'required'
@@ -68,26 +66,25 @@ class Msg extends Controller
 	  		if ($v->fails()) {
 	  		        return redirect()->back()->withErrors($v->errors());
 	  		}
-	  		if ( Input::has('MSG_NO')  ) {
-	  	    $msg_no = Input::get('MSG_NO');
+	  		
+  	    $msg_no = $request->input('MSG_NO');
 
-	  	    DB::table('msg_reply')
-	  	      ->where('MSG_NO', $msg_no)
-	  	      ->delete()
-	  	      ;
-	  	
-	  	    DB::table('msg_list')
-	  	      ->where('MSG_NO', $msg_no)
-	  	      ->delete()
-	  	      ;
-	  	     // Redirect('/msg_list');
-	  		}
+  	    DB::table('msg_reply')
+  	      ->where('MSG_NO', $msg_no)
+  	      ->delete()
+  	      ;
+  	
+  	    DB::table('msg_list')
+  	      ->where('MSG_NO', $msg_no)
+  	      ->delete()
+  	      ;
+	  		
 	    } 
 
 		  return Redirect('/msg');
 		}
 
-		//留言版
+		//留言版顯示
 		public function showMsgDetail($id)
 		{
 			$results = DB::table('msg_reply')
@@ -104,7 +101,7 @@ class Msg extends Controller
 		  }
 		}
 
-		//新增修改刪除留言
+		//留言版 新增修改刪除
 		public function replyMsg($id, Request $request)
 		{
 			//新發文
@@ -117,38 +114,40 @@ class Msg extends Controller
 			            return redirect()->back()->withErrors($v->errors());
 			    }
 
-			    if ( Input::has('MSG_TITLE') && Input::has('REPLY_MESSAGE')  ) {
-			      $msg_title = Input::get('MSG_TITLE');
-
-			      //get last MSG_NO
-			      $results = DB::table('msg_list')
-			                   ->select('MSG_NO')
-			                   ->orderBy('MSG_NO', 'desc')->first();
-			      if ($results) 
-			        $msg_no = $results->MSG_NO +1;
-			      else 
-			        $msg_no = 1;
-
-			      DB::table('msg_list')
-			        ->insert( array('MSG_TITLE' => $msg_title ,
-			                        
-			                        'PERSON_NO' => '1' ,
-			                        'MSG_TIME' => date("Y-m-d H:i:s")
-			                        ) 
-			                );
 			    
-			      $reply_message = Input::get('REPLY_MESSAGE');
-			      DB::table('msg_reply')
-			        ->insert( array('REPLY_MESSAGE' => $reply_message ,
-			                        'MSG_NO' => $msg_no ,
-			                        'PERSON_NO' => '1' ,
-			                        'REPLY_TIME' => date("Y-m-d H:i:s")
-			                        ) 
-			                );
-			    }
+		      $msg_title = $request->input('MSG_TITLE');
 
-			    $msg = "發文成功";
-			    return Redirect::to('/msg/'.$msg_no)->with(compact("msg"));  
+		      //get last MSG_NO
+		      $results = DB::table('msg_list')
+		                   ->select('MSG_NO')
+		                   ->orderBy('MSG_NO', 'desc')->first();
+		      if ($results) 
+		        $msg_no = $results->MSG_NO +1;
+		      else 
+		        $msg_no = 1;
+
+		      //新增標題
+		      DB::table('msg_list')
+		        ->insert( ['MSG_TITLE' => $msg_title ,
+		                        
+		                        'PERSON_NO' => '1' ,
+		                        'MSG_TIME' => date("Y-m-d H:i:s")
+		                  ]
+		                );
+		    
+		    	//新增回應
+		      $reply_message = $request->input('REPLY_MESSAGE');
+		      DB::table('msg_reply')
+		        ->insert( ['REPLY_MESSAGE' => $reply_message ,
+		                        'MSG_NO' => $msg_no ,
+		                        'PERSON_NO' => '1' ,
+		                        'REPLY_TIME' => date("Y-m-d H:i:s")
+		                  ] 
+		                );
+		    
+
+		    $msg = "發文成功";
+		    return Redirect::to('/msg/'.$msg_no)->with(compact("msg"));  
 
 			} else {
 
@@ -160,21 +159,18 @@ class Msg extends Controller
 					if ($v->fails()) {
 					        return redirect()->back()->withErrors($v->errors());
 					}
-				  if ( Input::has('REPLY_MESSAGE')  ) {
-				    $reply_message = Input::get('REPLY_MESSAGE');
-				    
-				    DB::table('msg_reply')
-				      ->insert( array('REPLY_MESSAGE' => $reply_message ,
-				      	              'MSG_NO' => $id ,
-				      	              'PERSON_NO' => '1' ,
-				      	              'REPLY_TIME' => date("Y-m-d H:i:s")
-				      	              ) 
-				      				);
-				    $msg = "回覆成功";
+				  
+			    $reply_message = $request->input('REPLY_MESSAGE');
+			    
+			    DB::table('msg_reply')
+			      ->insert( ['REPLY_MESSAGE' => $reply_message ,
+			      	              'MSG_NO' => $id ,
+			      	              'PERSON_NO' => '1' ,
+			      	              'REPLY_TIME' => date("Y-m-d H:i:s")
+			      	        ] 
+			      				);
+			    $msg = "回覆成功";
 
-				  } else {
-				    $msg = "請輸入標題及訊息內容";
-				  }
 				}
 
 			  //修改留言
@@ -185,20 +181,19 @@ class Msg extends Controller
 	  			if ($v->fails()) {
 	  			        return redirect()->back()->withErrors($v->errors());
 	  			}
-	  			if ( Input::has('REPLY_MESSAGE')  ) {
-	  		    $reply_message = Input::get('REPLY_MESSAGE');
-	  		    
-	  		    $reply_no = Input::get('REPLY_NO');
-	  		
-	  		    DB::table('msg_reply')
-	  		      ->where('REPLY_NO', $reply_no)
-	  		      ->update( ['REPLY_MESSAGE' => $reply_message,
-	  		      					 'REPLY_TIME'	=> date("Y-m-d H:i:s")
-	  		      					]
-	  		      				)
-	  		      ;
-	  		     // Redirect('/msg_list');
-	  			}
+	  			
+  		    $reply_message = $request->input('REPLY_MESSAGE');
+  		    
+  		    $reply_no = $request->input('REPLY_NO');
+  		
+  		    DB::table('msg_reply')
+  		      ->where('REPLY_NO', $reply_no)
+  		      ->update( ['REPLY_MESSAGE' => $reply_message,
+  		      					 'REPLY_TIME'	=> date("Y-m-d H:i:s")
+  		      					]
+  		      				)
+  		      ;
+	  			
 	  	  } 
 
 	  	  //刪除留言
@@ -210,23 +205,16 @@ class Msg extends Controller
 	    		        return redirect()->back()->withErrors($v->errors());
 	    		}
 	    		if ( Input::has('REPLY_NO')  ) {
-	    	    $reply_no = Input::get('REPLY_NO');
+	    	    $reply_no = $request->input('REPLY_NO');
 	    	
 	    	    DB::table('msg_reply')
 	    	      ->where('REPLY_NO', $reply_no)
 	    	      ->delete()
 	    	      ;
-	    	     // Redirect('/msg_list');
 	    		}
 	      } 
 
 
-			  $results = DB::table('msg_reply')
-			               ->select( 'REPLY_MESSAGE', 'REPLY_TIME', 'msg_reply.PERSON_NO' , 'msg_list.MSG_TITLE') 
-			               ->leftjoin('msg_list', 'msg_reply.MSG_NO' , '=', 'msg_list.MSG_NO')
-			               ->get(); 
-
-			  // return View::make('msg_reply')->with( compact("results") );
 			  return Redirect('/msg/'.$id)->with(compact("msg"));        
 			}     
 
