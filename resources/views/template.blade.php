@@ -24,26 +24,7 @@
   <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
   
   <link rel="stylesheet" href="{{ URL::asset('public/css/custom.css')}}">
-  <!-- Styles -->
-  <style type="text/css">
-    .affix {
-          top: 0;
-          width: 100%;
-      }
-
-    .affix + .container-fluid {
-        padding-top: 70px;
-    }
-    .nav-wrapper {
-          min-height:52px;
-    }
-    .navbar {
-       -webkit-backface-visibility: hidden;
-    }
-    .panel-body {
-      padding: 0;
-    }
-  </style>
+  
 </head>
 <body>
 	<div class="header">

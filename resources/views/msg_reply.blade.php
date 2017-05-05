@@ -1,15 +1,29 @@
 @extends('template')
 @section('content')
+<style type="text/css">
+  textarea.AutoHeight {
+      -moz-appearance: textfield-multiline;
+      -webkit-appearance: textarea;
+      border: 1px solid gray;
 
+      height: 300px;
+      max-height: 300px;
+      overflow: auto;
+      padding: 2px;
+      resize: both;
+
+  }
+  .panel-body {
+    min-height: 40px;
+  }
+</style>
         <form method="post">
           {{ csrf_field() }}
           <div id="wrapper">
 
             
-            <div id="page-wrapper" class="custom-page-wrapper">
-              
-              <div class="dataTable_wrapper" style="padding-top: 10px">
-
+            <div id="page-wrapper" class="custom-page-wrapper col-md-12">
+             
                   <div class="row">                    
                       @foreach($results as $result)
                         <div class="panel panel-primary">
@@ -39,7 +53,7 @@
                       </div><!-- /.panel -->
                       <input type="submit" name ="SAVE_ADD" class="btn btn-warning " value="增" onclick="return all_check();"/>
                   </section>
-              </div><!-- /#page-wrapper -->
+              
             </div>
           </div>
         </form>
@@ -51,7 +65,7 @@
             $("#reply_area").remove();
 
             $(this).parent().siblings("#REPLY_MESSAGE").html(
-              '<textarea class="form-control mustfill" name="REPLY_MESSAGE">'+$(this).parent().siblings("#REPLY_MESSAGE").html()+'</textarea>'
+              '<textarea class="form-control mustfill AutoHeight" name="REPLY_MESSAGE">'+$(this).parent().siblings("#REPLY_MESSAGE").html()+'</textarea>'
             );
 
             $(this).parent().html(
@@ -89,5 +103,12 @@
               );
               
             });//$("#btn_delete").click(function()
+        </script>
+        <script type="text/javascript">
+          jQuery(function($) {  
+               $("textarea.AutoHeight").css("overflow","auto").bind("keydown keyup", function(){  
+                   $(this).height('0px').height($(this).prop("scrollHeight")+"px");  
+               }).keydown();  
+          });  
         </script>
 @stop

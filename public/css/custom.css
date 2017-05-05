@@ -1,3 +1,24 @@
+
+.affix {
+      top: 0;
+      width: 100%; 
+      z-index: 9000;
+}
+
+.affix + .container-fluid {
+    padding-top: 70px;
+}
+.nav-wrapper {
+      min-height:52px;
+}
+.navbar {
+   -webkit-backface-visibility: hidden;
+}
+.panel-body {
+  padding: 0;
+}
+
+
 th {
   text-align : center;
 }
