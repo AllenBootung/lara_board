@@ -34,6 +34,9 @@
     .affix + .container-fluid {
         padding-top: 70px;
     }
+    .nav-wrapper {
+          min-height:52px;
+    }
     .navbar {
        -webkit-backface-visibility: hidden;
     }
@@ -48,14 +51,15 @@
       <h1>Laravel Msg Board</h1>
       
     </div>
-
-    <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="70" style="background: rgba(1,1,1,0.75);">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="{{url('/msg')}}">討論區</a></li>
-        <li><a href="{{url('/msg/add')}}">發新主題</a></li>
-        
-      </ul>
-    </nav>
+    <div class="nav-wrapper">
+      <nav class="navbar navbar-inverse" id="nav_board" data-spy="affix" data-offset-top="70" data-offset-top="820" style="background: rgba(1,1,1,0.75);">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="{{url('/msg')}}">討論區</a></li>
+          <li><a href="{{url('/msg/add')}}">發新主題</a></li>
+          
+        </ul>
+      </nav>
+    </div>
 	</div>
 	<div class="content">
 		@yield('content')

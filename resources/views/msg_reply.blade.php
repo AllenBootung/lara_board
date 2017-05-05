@@ -20,7 +20,7 @@
                               {{ $result->REPLY_TIME}}
                           </div>
                           
-                          <div class="panel-body" id="REPLY_MESSAGE">{{ $result->REPLY_MESSAGE}}</div>
+                          <div class="panel-body" id="REPLY_MESSAGE">{!! nl2br(e($result->REPLY_MESSAGE)) !!}</div>
                           
                         </div>
                       @endforeach                                         
@@ -34,7 +34,7 @@
                   <section class="row" id="reply_area" style="margin-top:10px;">
                       <div class="panel panel-primary">
                         <div class="panel-heading">
-                          <textarea class="form-control mustfill" rows="11" name="REPLY_MESSAGE"></textarea>
+                          <textarea class="form-control mustfill" rows="11" name="REPLY_MESSAGE" wrap="hard"></textarea>
                         </div>
                       </div><!-- /.panel -->
                       <input type="submit" name ="SAVE_ADD" class="btn btn-warning " value="增" onclick="return all_check();"/>
