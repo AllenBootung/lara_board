@@ -15,9 +15,10 @@
                     <table class="table" style="margin:0 auto;">
                         
                         <tr class="bg-blue"> 
-                          <th>功能</th>
+                          <th style='width:8%'>功能</th>
                           <th>開始時間</th>
                           <th>議題</th>
+                          <th style='width:15%'>摘要</th>
                           <th>回應數</th>
                           <th>結束時間</th>
                         </tr>
@@ -31,7 +32,8 @@
                                 <input type="button" class="btn btn-danger btn-xs btn_del" value="刪">
                             </td>
                             <td>{{$result->MSG_TIME}}</td>
-                            <td class="align-left" id="MSG_TITLE" style="overflow:hidden;"><a href="msg/{{$result->MSG_NO}}">{{$result->MSG_TITLE}}</a></td>
+                            <td class="align-left cut-td" id="MSG_TITLE" style="overflow:hidden;"><a href="msg/{{$result->MSG_NO}}">{{$result->MSG_TITLE}}</a></td>
+                            <td class="align-left cut-td" style="max-width:150px">{{$result->FIRST_MESSAGE}}</td>
                             <td>{{$result->REPLY_COUNT}}</td>
                             <td>{{$result->REPLY_TIME}}</td>
                           </tr>

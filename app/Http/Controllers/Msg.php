@@ -12,6 +12,7 @@ use View;
 use Redirect;
 class Msg extends Controller
 {
+ 
     
 		//顯示列表
     public function showMsgList()
@@ -22,8 +23,12 @@ class Msg extends Controller
     	             					 'MSG_TIME', 
     	             					 'msg_list.PERSON_NO', 
     	             					 DB::raw('COUNT(msg_reply.REPLY_NO) as REPLY_COUNT'),
-    	             					 DB::raw('MAX(msg_reply.REPLY_TIME) as REPLY_TIME')
-    	             					 
+ 														 DB::raw('MAX(msg_reply.REPLY_TIME) as REPLY_TIME'),
+ 														 DB::raw('(SELECT REPLY_MESSAGE
+ 														 	          FROM msg_reply
+ 														 	         WHERE msg_list.MSG_NO = msg_reply.MSG_NO
+ 														 	         LIMIT 1 ) as FIRST_MESSAGE
+ 														 				')  	 
     	             					)
     	             ->leftjoin('msg_reply', 'msg_list.MSG_NO', '=', 'msg_reply.MSG_NO')
     	             ->groupBy('msg_list.MSG_NO')
