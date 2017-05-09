@@ -27,13 +27,14 @@ class Msg extends Controller
  														 DB::raw('(SELECT REPLY_MESSAGE
  														 	          FROM msg_reply
  														 	         WHERE msg_list.MSG_NO = msg_reply.MSG_NO
- 														 	         LIMIT 1 ) as FIRST_MESSAGE
+ 														 	         LIMIT 1 )FIRST_MESSAGE
  														 				')  	 
     	             					)
     	             ->leftjoin('msg_reply', 'msg_list.MSG_NO', '=', 'msg_reply.MSG_NO')
     	             ->groupBy('msg_list.MSG_NO')
     	             ->paginate(5)
     	             ;
+                   
     	return View::make('msg_list')->with(compact("results"));
 		}
 

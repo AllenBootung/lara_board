@@ -18,11 +18,9 @@
   <script src={{ URL::asset('public/AdminLTE-2.3.11/bootstrap/js/bootstrap.min.js') }}></script>
  
 
-  <title>Laravel</title>
+  <title>Laravel Msg Board</title>
 
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-  
   <link rel="stylesheet" href="{{ URL::asset('public/css/custom.css')}}">
   
 </head>
@@ -33,7 +31,7 @@
       
     </div>
     <div class="nav-wrapper">
-      <nav class="navbar navbar-inverse" id="nav_board" data-spy="affix" data-offset-top="70" data-offset-top="820" style="background: rgba(1,1,1,0.75);">
+      <nav class="navbar navbar-inverse" id="nav_board" data-spy="affix" data-offset-top="70" style="background: rgba(1,1,1,0.75);">
         <ul class="nav navbar-nav">
           <li class="active"><a href="{{url('/msg')}}">討論區</a></li>
           <li><a href="{{url('/msg/add')}}">發新主題</a></li>
