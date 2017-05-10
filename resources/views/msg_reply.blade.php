@@ -23,7 +23,9 @@
 
     
     <div id="page-wrapper" class="custom-page-wrapper col-md-12">
-     
+        @if ( isset($msg))
+          msg
+        @endif
         <div class="row">                    
             @foreach($results as $result)
               <div class="panel panel-primary">
@@ -66,7 +68,6 @@
 
     var reply_msg = $(this).parent().siblings("#REPLY_MESSAGE").html().replace(/<br>/g, "");
     
-    console.log(reply_msg);
     $(this).parent().siblings("#REPLY_MESSAGE").html(
       '<textarea class="form-control mustfill AutoHeight" name="REPLY_MESSAGE">'+
         reply_msg +

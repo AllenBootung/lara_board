@@ -32,6 +32,7 @@ class Msg extends Controller
     	             					)
     	             ->leftjoin('msg_reply', 'msg_list.MSG_NO', '=', 'msg_reply.MSG_NO')
     	             ->groupBy('msg_list.MSG_NO')
+                   ->orderBy('msg_list.MSG_NO')
     	             ->paginate(5)
     	             ;
                    
@@ -108,6 +109,7 @@ class Msg extends Controller
 		               					 'msg_list.MSG_TITLE') 
 		               ->leftjoin('msg_list', 'msg_reply.MSG_NO' , '=', 'msg_list.MSG_NO')
 		               ->where('msg_reply.MSG_NO', '=', $id)
+                   ->orderBy('msg_reply.REPLY_NO')
 		               ->paginate(5); 
 		  
 		  if ($id=="add") { //當網址是/add時新增議題，於前端顯示title輸入框
@@ -162,9 +164,7 @@ class Msg extends Controller
 		                   'REPLY_TIME' => date("Y-m-d H:i:s")
 		                  ] 
 		                );
-		    
 
-		    $msg = "發文成功";
 		    return Redirect::to('/msg/'.$msg_no)->with(compact("msg"));  
 
 			} else {
