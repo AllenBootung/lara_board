@@ -12,7 +12,6 @@ use View;
 use Redirect;
 class Msg extends Controller
 {
- 
     
 		//顯示列表
     public function showMsgList()
@@ -123,9 +122,7 @@ class Msg extends Controller
 		//留言版 新增修改刪除
 		public function replyMsg($id, Request $request)
 		{
-			//處理存完後導分頁
-
-
+			
 			//新發文
 			if ($id == "add") {
 			    $v = Validator::make($request->all(), [
