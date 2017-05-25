@@ -17,8 +17,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/', "Firsthi@index");
-
+Route::get('/register', function () {
+    return view('layouts/app');
+});
 
 //     Route::get('/msg_list', "Msg@listt");
        
@@ -42,3 +43,7 @@ Route::post('/msg/{id?}', "Msg@replyMsg");
 
 
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
