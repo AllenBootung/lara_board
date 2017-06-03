@@ -17,9 +17,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/register', function () {
-    return view('layouts/app');
-});
+// Route::get('/register', function () {
+//     return view('layouts/app');
+// });
 
 //     Route::get('/msg_list', "Msg@listt");
        
@@ -41,8 +41,8 @@ Route::get('/msg/{id?}', "Msg@showMsgDetail");
 Route::post('/msg/{id?}', "Msg@replyMsg");
 
 
-
-
+Route::get('/game', "Game@showGame");
+Route::post('/enemy.php/{id?}' "Game@enemy");
 
 Auth::routes();
 
