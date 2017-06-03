@@ -42,7 +42,7 @@ Route::post('/msg/{id?}', "Msg@replyMsg");
 
 
 Route::get('/game', "Game@showGame");
-Route::post('/enemy.php/{id?}' "Game@enemy");
+Route::get('/enemies', "Game@showEnemy");
 
 Auth::routes();
 

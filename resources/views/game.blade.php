@@ -197,7 +197,7 @@ Released under the MIT license: http://jsbin.mit-license.org
         'enemyQuantity': this.enemyQuantity
       };
 
-      var url = 'enemies.php?rowQuantity=' + this.rowQuantity +
+      var url = 'enemies?rowQuantity=' + this.rowQuantity +
       '&columnQuantity=' + this.columnQuantity + '&enemyQuantity=' +
       this.enemyQuantity;
 
@@ -206,9 +206,10 @@ Released under the MIT license: http://jsbin.mit-license.org
       this.$http.get(url)
       .then( (response) => {
 
-        // console.log(response.json());
+        console.log(response);
 
         this.enemies = response.json();
+        console.log(response.json());
       },
       // on error 
       (response) => {
@@ -217,7 +218,7 @@ Released under the MIT license: http://jsbin.mit-license.org
       });
       
       // manual change enemies location to see how it works
-       this.enemies = exampleEnemies2;
+       // this.enemies = exampleEnemies2;
     },
     move: function(direction){
       if (direction == 'up')
