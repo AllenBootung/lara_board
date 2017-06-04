@@ -30,8 +30,6 @@ class Cord
 
 class Game extends Controller
 {
- 
-    
 		//顯示列表
     public function showGame()
     {
@@ -40,200 +38,222 @@ class Game extends Controller
 		}
 
 		//check movement before save into history
-		// public function checkHistory($safe, $move_direction)
-		// {
-		// 	$done = false;
+		public function checkHistory($safe, $move_direction)
+		{
+			$done = false;
 
-  //     $step_into = $safe->history.end();
-  //     switch ($move_direction) {
-  //     	case 0:
-  //     		$step_into->rowIndex-1;
-  //     		break;
-  //     	case 1:
-  //     		$step_into->columnIndex+1;
-  //     		break;
-  //     	case 2:
-  //     		$step_into->rowIndex+1;
-  //     		break;
-  //     	case 3:
-  //     		$step_into->columnIndex-1;
-  //     		break;
-  //     	default:
-  //     		# code...
-  //     		break;
-  //     }
+      $step_into = clone end($safe->history);
+      switch ($move_direction) {
+      	case 0:
+      		$step_into->rowIndex--;
+      		break;
+      	case 1:
+      		$step_into->columnIndex++;
+      		break;
+      	case 2:
+      		$step_into->rowIndex++;
+      		break;
+      	case 3:
+      		$step_into->columnIndex--;
+      		break;
+      	default:
+      		# code...
+      		break;
+      }
 
-  //     //step out of range
-  //     if ( ($step_into->rowIndex < 0) || ($step_into->rowIndex > $safe->rowQuantity) ||
-  //     		 ($step_into->columnIndex < 0) || ($step_into->columnIndex > $safe->columnQuantity)
-  //      ) {
-  //     	return false;
-  //     }
+      //step out of range
+      if ( ($step_into->rowIndex < 0) || ($step_into->rowIndex > $safe->rowQuantity) ||
+      		 ($step_into->columnIndex < 0) || ($step_into->columnIndex > $safe->columnQuantity)
+       ) {
+      	return false;
+      }
 
-		// 	//check if enter lock area
-		// 	for ($i=0; $i < $safe->lock_area.length(); $i++) { 
-		// 			if ( ($safe->lock_area[i]->rowIndex == $step_into->rowIndex) &&
-		// 				   ($safe->lock_area[i]->columnIndex == $step_into->columnIndex) 
-		// 			 ) {
-		// 					return false;
-		// 			}	
-		// 	}
+			//check if enter lock area
+			for ($i=0; $i < count($safe->lock_area); $i++) { 
+					if ( ($safe->lock_area[$i]->rowIndex == $step_into->rowIndex) &&
+						   ($safe->lock_area[$i]->columnIndex == $step_into->columnIndex) 
+					 ) {
+							return false;
+					}	
+			}
 
-		// 	//check this move in every history
-		// 	for ($i=0; $i < $safe->history.length(); $i++) { 
-		// 			if ( ($safe->history[i]->rowIndex == $step_into->rowIndex) &&
-		// 				   ($safe->history[i]->columnIndex == $step_into->columnIndex) 
-		// 			 ) {
-		// 					return false;
-		// 			}	
-		// 	}
+			//check this move in every history
+			for ($i=0; $i < count($safe->history); $i++) { 
+					if ( ($safe->history[$i]->rowIndex == $step_into->rowIndex) &&
+						   ($safe->history[$i]->columnIndex == $step_into->columnIndex) 
+					 ) {
+							return false;
+					}	
+			}
 
-		// 	return true;
-		// }
+			return true;
+		}
 
 		
 
 		//add this movement to safe route or delee
-		public function history($safe, $move)
+		public function history($safe, $move_direction)
 		{
-			// $now = $safe->history.end();
-			// switch ($move) {
-			// 	case 0:
-			// 		# code...
-			// 		break;
-			// 	case 1:
-			// 		# code...
-			// 		break;
-			// 	case 2:
-			// 		# code...
-			// 		break;
-			// 	case 3
-			// 		# code...
-			// 		break;
-				
-			// 	default:
-			// 		# code...
-			// 		break;
-			// }
+			$step_into = clone end($safe->history);
+      switch ($move_direction) {
+      	case 0:
+      		$step_into->rowIndex--;
+      		break;
+      	case 1:
+      		$step_into->columnIndex++;
+      		break;
+      	case 2:
+      		$step_into->rowIndex++;
+      		break;
+      	case 3:
+      		$step_into->columnIndex--;
+      		break;
+      	case 'go_back':
+      		array_push($safe->lock_area, $step_into);
+      		array_pop($safe->history);
+      	default:
+      		# code...
+      		break;
+      }
+
+      array_push($safe->history, $step_into);
 		}
 
 		//safe route moving
-		// public function move($safe)
-		// {
-		// 		$done = false;
-		// 		$false_direction = 0;
-
-		// 		do {
-		// 	  	$move_direction = rand(0,3);
-		// 	  	$go = $this->checkHistory($safe, $move_direction);
-			  	
-		// 	  	if ($go) {
-		// 	  		$this->history($move_direction);
-		// 	  		$done = true;
-		// 	  	} else{
-		// 	  		$move_direction = ($move_direction+1) % 4;
-		// 	  		$false_direction++;
-		// 	  	}
-
-		// 	  	if ($false_direction>=4) {
-		// 	  		$this->history("go_back");
-		// 	  	}
-
-				  
-		// 		} while (!$done) ;
-
-
-		// }
-
-		//after safe route created, place enemy
-		public function placeEnemies($safe)
+		public function move($safe)
 		{
-				//check if this enemy in range
+				$safe;
 				$done = false;
-				do {
+				$false_direction = 0;
 
-				} while (!$done);
+				do {
+			  	$move_direction = rand(0,3);
+			  	$go = $this->checkHistory($safe, $move_direction);
+			  	
+			  	if ($go) {
+			  		$this->history($safe, $move_direction);
+			  		$done = true;
+			  	} else {
+			  		$move_direction = ($move_direction+1) % 4;
+			  		$false_direction++;
+			  	}
+
+			  	if ($false_direction>=4) {
+			  		$this->history($safe, "go_back");
+			  	}
+
+				  $done = true;
+				} while (!$done) ;
+
+
+					  // for ($i=1; $i < 4; $i++) { 
+					  // 	$arr[$i] = new Cord;
+					  // 	$arr[$i]->rowIndex = $i;
+					  // 	$arr[$i]->columnIndex = $i;
+					  // 	array_push($safe->history, $arr[$i]);
+					  // }
+
+					  // 	$end = clone end($safe->history);
+					  // 	$end->rowIndex = 88;
+					  // 	array_push($safe->history, $end);
+
 		}
 
-		// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 
-		// public function showEnemy(Request $request)
+		// //after safe route created, place enemy
+		// public function placeEnemies($safe)
 		// {
-			
-		// 	$safe = new Safe();
-		// 	$safe->columnQuantity = $request->columnQuantity;
-		// 	$safe->rowQuantity = $request->rowQuantity;
+		// 		//check if this enemy in range
+		// 		$done = false;
+		// 		do {
 
-		// 	$done = false;
-		// 	do {
-			  
-		// 	  $route = new Cord;
-		// 	  $route->rowIndex = 0;
-		// 	  $route->columnIndex = 0;
-		// 	  $safe->history[] = $route;
-			  
-
-		// 	  //move ↓1 ↑2 →3 ←4 untill (Quantity, Quantity)
-		// 	  // while ( ($now_row != $request->rowQuantity) && ($now_col != $request->colQuantity) ) {
-		// 	  	$this->move($safe);
-		// 	  // }
-				
-		// 		//place enemies  
-		// 	  // for ($i=0; $i < $request->enemyQuantity; $i++) { 
-		// 	  // 	$this->placeEnemies();
-		// 	  // }
-				
-		// 		$done = true;
-		// 	} while (!$done);
-		
-
-
-		// // 	// return enemies to front
-		// // 	$postition = (object) $save->history;
-
-		// // 	// $postition = (object) [ 'rowIndex'=>2, 'columnIndex'=>5 ];
-
-		// // 	// $postition = "[
-		// // 	// 						  { 'rowIndex': 2, 'columnIndex': 4},
-		// // 	// 						  { 'rowIndex': 2, 'columnIndex': 5}
-		// // 	// 						 ]";
-
-
-		// 	$JSONpostion = json_encode($safe);
-		// 	return $JSONpostion;
+		// 		} while (!$done);
 		// }
 
-
-
+		// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 
 		public function showEnemy(Request $request)
 		{
 			
 			$safe = new Safe();
+			$safe->columnQuantity = $request->columnQuantity;
+			$safe->rowQuantity = $request->rowQuantity;
 
+			$done = false;
+			do {
+			  
+			  $route = new Cord;
+			  $route->rowIndex = 0;
+			  $route->columnIndex = 0;
+			  $safe->history = [];
+
+			  array_push($safe->history, $route);
+			  
+
+			  //move ↓1 ↑2 →3 ←4 untill (Quantity, Quantity)
+			  // do {
+			  	$this->move($safe);
+			  	$now = clone end($safe->history);
+			  	$now_col = $now->columnIndex;
+			  	$now_row = $now->rowIndex;
+			  	// $now_col =clone end($safe->history->columnIndex);
+			  	// $now_row =clone end($safe->history->rowIndex);
+			  } while ( 
+			  				  ($now_row != $safe->rowQuantity) &&
+			  	        ($now_col != $safe->columnQuantity)
+			    );
 				
-
-			  // $route = new Cord;
-
-			  for ($i=0; $i < 3; $i++) { 
-			  	$arr[$i] = new Cord;
-			  	$arr[$i]->rowIndex = $i;
-			  	$arr[$i]->columnIndex = $i;
-			  	array_push($safe->history, $arr[$i]);
-			  }
-
-			  // $route->rowIndex = 2;
-			  // $route->columnIndex = 2;
-
-			  // $safe->history = $route;	
-			  // array_push($safe->history, $route);
-
-			  // $route->rowIndex = 2;
-			  // $route->columnIndex = 3;
-			  // array_push($safe->history, $route);
+				//place enemies  
+			  // for ($i=0; $i < $request->enemyQuantity; $i++) { 
+			  // 	$this->placeEnemies();
+			  // }
+				
+				$done = true;
+			} while (!$done);
+		
 
 
-			  $JSONpostion = json_encode($safe);
-			  return $JSONpostion;
-		}	
+		// 	// return enemies to front
+		// 	$postition = (object) $save->history;
+
+		// 	// $postition = (object) [ 'rowIndex'=>2, 'columnIndex'=>5 ];
+
+		// 	// $postition = "[
+		// 	// 						  { 'rowIndex': 2, 'columnIndex': 4},
+		// 	// 						  { 'rowIndex': 2, 'columnIndex': 5}
+		// 	// 						 ]";
+
+
+			$JSONpostion = json_encode($safe);
+			return $JSONpostion;
+		}
+
+
+
+		// public function showEnemy(Request $request)
+		// {
+			
+		// 	$safe = new Safe();
+
+		// 	  // $route = new Cord;
+
+		// 	  for ($i=0; $i < 3; $i++) { 
+		// 	  	$arr[$i] = new Cord;
+		// 	  	$arr[$i]->rowIndex = $i;
+		// 	  	$arr[$i]->columnIndex = $i;
+		// 	  	array_push($safe->history, $arr[$i]);
+		// 	  }
+
+		// 	  // $route->rowIndex = 2;
+		// 	  // $route->columnIndex = 2;
+
+		// 	  // $safe->history = $route;	
+		// 	  // array_push($safe->history, $route);
+
+			
+
+
+		// 	  $JSONpostion = json_encode($safe);
+		// 	  return $JSONpostion;
+		// }	
 
 
 
