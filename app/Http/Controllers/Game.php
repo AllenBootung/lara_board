@@ -14,8 +14,15 @@ use Redirect;
 // game safe route
 class Safe 
 {
-	public $history = array();
-	public $lock = array();
+	public $history = array() ;
+	public $lock_area = array(); 
+}
+
+// cordingate
+class Cord
+{
+	public $rowIndex;
+	public $columnIndex;
 }
 
 class Game extends Controller
@@ -29,71 +36,73 @@ class Game extends Controller
     	return View::make('game');
 		}
 
-		//check movement before step into history
-		public function checkHistory($move_direction, $safe)
-		{
-			//check if enter lock area
-			for ($i=0; $i < $safe->lock.length(); $i++) { 
-				
-			}
+		//check movement before save into history
+		// public function checkHistory($move_direction, $safe)
+		// {
+		// 	$done = false;
+  //     $step = $safe->history.end()
 
-			//check this move in every history
-			for ($i=0; $i < $safe->history.length(); $i++) { 
-				# code...
-			}
-		}
+
+		// 	//check if enter lock area
+		// 	for ($i=0; $i < $safe->lock_area.length(); $i++) { 
+		// 			if ( $safe->lock_area[i] ) {
+		// 					# code...
+		// 			}	
+		// 	}
+
+		// 	//check this move in every history
+		// 	for ($i=0; $i < $safe->history.length(); $i++) { 
+		// 		# code...
+		// 	}
+
+		// 	return $done;
+		// }
 
 		
 
-		//add this movement to safe route
-		public function history($move, $safe)
-		{
-			$now = $safe->history.end();
-			switch ($move) {
-				case 1:
-					# code...
-					break;
-				case 2:
-					# code...
-					break;
-				case 3:
-					# code...
-					break;
-				case 4:
-					# code...
-					break;
-				case 'back_n_block':
-					//delee latest postion and lock it
-					$safe->lock = $safe->history.end();
-					unset( $safe->history.end());
-					break;
-				default:
-					# code...
-					break;
-			}
-		}
+		//add this movement to safe route or delee
+		// public function history($move, $safe)
+		// {
+		// 	$now = $safe->history.end();
+		// 	switch ($move) {
+		// 		case 0:
+		// 			# code...
+		// 			break;
+		// 		case 1:
+		// 			# code...
+		// 			break;
+		// 		case 2:
+		// 			# code...
+		// 			break;
+		// 		case 3
+		// 			# code...
+		// 			break;
+				
+		// 		default:
+		// 			# code...
+		// 			break;
+		// 	}
+		// }
 
-		//safe route moving
-		public function move($safe)
-		{
-				$done = false;
-				do {
-			  	$move_direction = rand() % 4;
-
-			  	$go = checkHistory($move_direction);
+		// //safe route moving
+		// public function move($safe)
+		// {
+		// 		$done = false;
+		// 		do {
+		// 	  	$move_direction = rand(0,3);
+		// 	  	$go = $this->checkHistory($safe, $move_direction);
 			  	
-			  	if ($go) {
-			  		history($move_direction);
-			  	} else {
-			  		history("back_n_block");
-			  	}
+		// 	  	if ($go) {
+		// 	  		$this->history($move_direction);
+		// 	  		$done = true;
+		// 	  	} 
 
 				  
-				} while ( $done ) 
+		// 		} while (!$done);
 
-				//if route repeat, go back
+		// 		//if route repeat, go back
 
-		}
+		// }
 
 		//after safe route created, place enemy
 		public function placeEnemies($safe)
@@ -102,49 +111,105 @@ class Game extends Controller
 				$done = false;
 				do {
 
-				} while ($done);
+				} while (!$done);
 		}
 
-		public function showEnemy(Request $request)
-		{
-			// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 
-			$safe = new Safe();
+		// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 
+		// public function showEnemy(Request $request)
+		// {
+			
+		// 	$safe = new Safe();
 
-			$done = false;
-			do {
-				// 1.safe route
-			  $now_row = 0;
-			  $now_col = 0;
-
-			  $safe->history = [{"x": $now_col, "y": $now_row}];
-
-			  //move ↓1 ↑2 →3 ←4 untill (Quantity, Quantity)
-			  //if exist history move_direction++
-			  while ( ($now_row != $request->rowQuantity) && ($now_col != $request->colQuantity) ) {
-			  	$this->move();
-			  }
-				  
-			  for ($i=0; $i < $request->enemyQuantity; $i++) { 
-			  	placeEnemies();
-			  }
+		// 	$done = false;
+		// 	do {
 				
-			} while ($done);
+		// 	  $now_row = 0;
+		// 	  $now_col = 0;
+		// 	  $route = new Cord;
+		// 	  $route->rowIndex = 0;
+		// 	  $route->columnIndex = 0;
+		// 	  $safe.push($route);	
+		// 	  // $safe->history = [{"x": $now_col, "y": $now_row}];
+
+		// 	  //move ↓1 ↑2 →3 ←4 untill (Quantity, Quantity)
+		// 	  while ( ($now_row != $request->rowQuantity) && ($now_col != $request->colQuantity) ) {
+		// 	  	$this->move($safe);
+		// 	  }
+				
+		// 		//place enemies  
+		// 	  for ($i=0; $i < $request->enemyQuantity; $i++) { 
+		// 	  	$this->placeEnemies();
+		// 	  }
+				
+		// 	} while (!$done);
 		
 
 
-			// return enemies to front
-			$postition = (object) $save->history;
+		// 	// return enemies to front
+		// 	$postition = (object) $save->history;
 
-			// $postition = (object) [ 'rowIndex'=>2, 'columnIndex'=>5 ];
+		// 	// $postition = (object) [ 'rowIndex'=>2, 'columnIndex'=>5 ];
 
-			// $postition = "[
-			// 						  { 'rowIndex': 2, 'columnIndex': 4},
-			// 						  { 'rowIndex': 2, 'columnIndex': 5}
-			// 						 ]";
+		// 	// $postition = "[
+		// 	// 						  { 'rowIndex': 2, 'columnIndex': 4},
+		// 	// 						  { 'rowIndex': 2, 'columnIndex': 5}
+		// 	// 						 ]";
 
 
-			$JSONpostion = json_encode($postition);
-			return $JSONpostion;
-		}
+		// 	$JSONpostion = json_encode($postition);
+		// 	return $JSONpostion;
+		// }
+
+
+
+		public function showEnemy(Request $request)
+		{
+			
+			$safe = new Safe();
+
+				
+
+			  $route = new Cord;
+			  $route->rowIndex = 2;
+			  $route->columnIndex = 2;
+
+			  array_push($safe->history, $route);
+			  
+			  // $safe->history.push($route);	
+
+			  $JSONpostion = json_encode($safe);
+			  return $JSONpostion;
+		}	
+
+
+
+
+
+
+
+
+
+		// public function showEnemy(Request $request)
+		// {
+		// 	// $postition = ["foo" => "bar",
+  //  //  								"bar" => "foo"];
+		// 	// $postition = 
+		// 	// 						 [
+		// 	// 						  { 'rowIndex': 2, 'columnIndex': 4},
+		// 	// 						  { 'rowIndex': 2, 'columnIndex': 5}
+		// 	// 						 ];
+
+		// 	$pos = new Cord();
+		// 	$pos->rowIndex = 2;
+		// 	$pos->columnIndex = 2;
+		// 	// $ar[] = $pos;
+		// 	$ar = array();
+		// 	array_push($ar,$pos);
+		// 	$JSONpos = json_encode($ar);
+		// 	return $JSONpos;
+
+		// 	// $JSONpostion = json_encode($postition);
+		// 	// return $JSONpostion;
+		// }
 }
 

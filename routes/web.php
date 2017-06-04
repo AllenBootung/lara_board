@@ -42,7 +42,10 @@ Route::post('/msg/{id?}', "Msg@replyMsg");
 
 
 Route::get('/game', "Game@showGame");
-Route::get('/enemies', "Game@showEnemy");
+// Route::get('/enemies/{id?}', "Game@showEnemy");
+Route::get('enemies/rowQuantity/{rowQuantity}/columnQuantity/{columnQuantity}/enemyQuantity/{enemyQuantity}', "Game@showEnemy");
+// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 
+
 
 Auth::routes();
 

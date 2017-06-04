@@ -74,7 +74,7 @@ Released under the MIT license: http://jsbin.mit-license.org
   </div>
 </div>
 <script id="jsbin-javascript">
-// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 404 (Not Found)
+// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 
 
 
   var exampleEnemies = [
@@ -98,6 +98,7 @@ Released under the MIT license: http://jsbin.mit-license.org
   { 'rowIndex': 2, 'columnIndex': 3}
   ];
 
+  var returnEnemies;
 
   var vue = new Vue({
     el: '#app',
@@ -197,23 +198,26 @@ Released under the MIT license: http://jsbin.mit-license.org
         'enemyQuantity': this.enemyQuantity
       };
 
-      var url = 'enemies?rowQuantity=' + this.rowQuantity +
-      '&columnQuantity=' + this.columnQuantity + '&enemyQuantity=' +
+      // var url = 'enemies?rowQuantity=' + this.rowQuantity +
+      // '&columnQuantity=' + this.columnQuantity + '&enemyQuantity=' +
+      // this.enemyQuantity;
+      var url = 'enemies/rowQuantity/' + this.rowQuantity +
+      '/columnQuantity/' + this.columnQuantity + '/enemyQuantity/' +
       this.enemyQuantity;
-
 
       // console.log(gridParameters);
       this.$http.get(url)
       .then( (response) => {
-
+        console.log("response=");
         console.log(response);
 
         this.enemies = response.json();
+        returnEnemies = response.json();
         console.log(response.json());
       },
       // on error 
       (response) => {
-
+        console.log("error");
         console.log(response);
       });
       
@@ -223,22 +227,22 @@ Released under the MIT license: http://jsbin.mit-license.org
     move: function(direction){
       if (direction == 'up')
       {
-       this.current.rowIndex --;   
-     }
-     if (direction == 'down')
-     {
-      this.current.rowIndex ++;
-    }
-    if (direction == 'right')
-    {
-      this.current.columnIndex ++;  
-    }
-    if (direction == 'left')
-    {
-      this.current.columnIndex --;  
-    }
+        this.current.rowIndex --;   
+      }
+      if (direction == 'down')
+      {
+        this.current.rowIndex ++;
+      }
+      if (direction == 'right')
+      {
+        this.current.columnIndex ++;  
+      }
+      if (direction == 'left')
+      {
+        this.current.columnIndex --;  
+      }
 
-  }
+    }
 
 
 },
