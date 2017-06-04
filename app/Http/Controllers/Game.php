@@ -16,6 +16,9 @@ class Safe
 {
 	public $history = array() ;
 	public $lock_area = array(); 
+
+	public $rowQuantity;
+	public $columnQuantity;
 }
 
 // cordingate
@@ -37,57 +40,89 @@ class Game extends Controller
 		}
 
 		//check movement before save into history
-		// public function checkHistory($move_direction, $safe)
+		// public function checkHistory($safe, $move_direction)
 		// {
 		// 	$done = false;
-  //     $step = $safe->history.end()
 
+  //     $step_into = $safe->history.end();
+  //     switch ($move_direction) {
+  //     	case 0:
+  //     		$step_into->rowIndex-1;
+  //     		break;
+  //     	case 1:
+  //     		$step_into->columnIndex+1;
+  //     		break;
+  //     	case 2:
+  //     		$step_into->rowIndex+1;
+  //     		break;
+  //     	case 3:
+  //     		$step_into->columnIndex-1;
+  //     		break;
+  //     	default:
+  //     		# code...
+  //     		break;
+  //     }
+
+  //     //step out of range
+  //     if ( ($step_into->rowIndex < 0) || ($step_into->rowIndex > $safe->rowQuantity) ||
+  //     		 ($step_into->columnIndex < 0) || ($step_into->columnIndex > $safe->columnQuantity)
+  //      ) {
+  //     	return false;
+  //     }
 
 		// 	//check if enter lock area
 		// 	for ($i=0; $i < $safe->lock_area.length(); $i++) { 
-		// 			if ( $safe->lock_area[i] ) {
-		// 					# code...
+		// 			if ( ($safe->lock_area[i]->rowIndex == $step_into->rowIndex) &&
+		// 				   ($safe->lock_area[i]->columnIndex == $step_into->columnIndex) 
+		// 			 ) {
+		// 					return false;
 		// 			}	
 		// 	}
 
 		// 	//check this move in every history
 		// 	for ($i=0; $i < $safe->history.length(); $i++) { 
-		// 		# code...
+		// 			if ( ($safe->history[i]->rowIndex == $step_into->rowIndex) &&
+		// 				   ($safe->history[i]->columnIndex == $step_into->columnIndex) 
+		// 			 ) {
+		// 					return false;
+		// 			}	
 		// 	}
 
-		// 	return $done;
+		// 	return true;
 		// }
 
 		
 
 		//add this movement to safe route or delee
-		// public function history($move, $safe)
-		// {
-		// 	$now = $safe->history.end();
-		// 	switch ($move) {
-		// 		case 0:
-		// 			# code...
-		// 			break;
-		// 		case 1:
-		// 			# code...
-		// 			break;
-		// 		case 2:
-		// 			# code...
-		// 			break;
-		// 		case 3
-		// 			# code...
-		// 			break;
+		public function history($safe, $move)
+		{
+			// $now = $safe->history.end();
+			// switch ($move) {
+			// 	case 0:
+			// 		# code...
+			// 		break;
+			// 	case 1:
+			// 		# code...
+			// 		break;
+			// 	case 2:
+			// 		# code...
+			// 		break;
+			// 	case 3
+			// 		# code...
+			// 		break;
 				
-		// 		default:
-		// 			# code...
-		// 			break;
-		// 	}
-		// }
+			// 	default:
+			// 		# code...
+			// 		break;
+			// }
+		}
 
-		// //safe route moving
+		//safe route moving
 		// public function move($safe)
 		// {
 		// 		$done = false;
+		// 		$false_direction = 0;
+
 		// 		do {
 		// 	  	$move_direction = rand(0,3);
 		// 	  	$go = $this->checkHistory($safe, $move_direction);
@@ -95,12 +130,18 @@ class Game extends Controller
 		// 	  	if ($go) {
 		// 	  		$this->history($move_direction);
 		// 	  		$done = true;
-		// 	  	} 
+		// 	  	} else{
+		// 	  		$move_direction = ($move_direction+1) % 4;
+		// 	  		$false_direction++;
+		// 	  	}
+
+		// 	  	if ($false_direction>=4) {
+		// 	  		$this->history("go_back");
+		// 	  	}
 
 				  
-		// 		} while (!$done);
+		// 		} while (!$done) ;
 
-		// 		//if route repeat, go back
 
 		// }
 
@@ -119,44 +160,45 @@ class Game extends Controller
 		// {
 			
 		// 	$safe = new Safe();
+		// 	$safe->columnQuantity = $request->columnQuantity;
+		// 	$safe->rowQuantity = $request->rowQuantity;
 
 		// 	$done = false;
 		// 	do {
-				
-		// 	  $now_row = 0;
-		// 	  $now_col = 0;
+			  
 		// 	  $route = new Cord;
 		// 	  $route->rowIndex = 0;
 		// 	  $route->columnIndex = 0;
-		// 	  $safe.push($route);	
-		// 	  // $safe->history = [{"x": $now_col, "y": $now_row}];
+		// 	  $safe->history[] = $route;
+			  
 
 		// 	  //move ↓1 ↑2 →3 ←4 untill (Quantity, Quantity)
-		// 	  while ( ($now_row != $request->rowQuantity) && ($now_col != $request->colQuantity) ) {
+		// 	  // while ( ($now_row != $request->rowQuantity) && ($now_col != $request->colQuantity) ) {
 		// 	  	$this->move($safe);
-		// 	  }
+		// 	  // }
 				
 		// 		//place enemies  
-		// 	  for ($i=0; $i < $request->enemyQuantity; $i++) { 
-		// 	  	$this->placeEnemies();
-		// 	  }
+		// 	  // for ($i=0; $i < $request->enemyQuantity; $i++) { 
+		// 	  // 	$this->placeEnemies();
+		// 	  // }
 				
+		// 		$done = true;
 		// 	} while (!$done);
 		
 
 
-		// 	// return enemies to front
-		// 	$postition = (object) $save->history;
+		// // 	// return enemies to front
+		// // 	$postition = (object) $save->history;
 
-		// 	// $postition = (object) [ 'rowIndex'=>2, 'columnIndex'=>5 ];
+		// // 	// $postition = (object) [ 'rowIndex'=>2, 'columnIndex'=>5 ];
 
-		// 	// $postition = "[
-		// 	// 						  { 'rowIndex': 2, 'columnIndex': 4},
-		// 	// 						  { 'rowIndex': 2, 'columnIndex': 5}
-		// 	// 						 ]";
+		// // 	// $postition = "[
+		// // 	// 						  { 'rowIndex': 2, 'columnIndex': 4},
+		// // 	// 						  { 'rowIndex': 2, 'columnIndex': 5}
+		// // 	// 						 ]";
 
 
-		// 	$JSONpostion = json_encode($postition);
+		// 	$JSONpostion = json_encode($safe);
 		// 	return $JSONpostion;
 		// }
 
@@ -169,13 +211,25 @@ class Game extends Controller
 
 				
 
-			  $route = new Cord;
-			  $route->rowIndex = 2;
-			  $route->columnIndex = 2;
+			  // $route = new Cord;
 
-			  array_push($safe->history, $route);
-			  
-			  // $safe->history.push($route);	
+			  for ($i=0; $i < 3; $i++) { 
+			  	$arr[$i] = new Cord;
+			  	$arr[$i]->rowIndex = $i;
+			  	$arr[$i]->columnIndex = $i;
+			  	array_push($safe->history, $arr[$i]);
+			  }
+
+			  // $route->rowIndex = 2;
+			  // $route->columnIndex = 2;
+
+			  // $safe->history = $route;	
+			  // array_push($safe->history, $route);
+
+			  // $route->rowIndex = 2;
+			  // $route->columnIndex = 3;
+			  // array_push($safe->history, $route);
+
 
 			  $JSONpostion = json_encode($safe);
 			  return $JSONpostion;
