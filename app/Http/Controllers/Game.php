@@ -189,7 +189,7 @@ class Game extends Controller
 			  
 
 			  //move ↓1 ↑2 →3 ←4 untill (Quantity, Quantity)
-			  // do {
+			  do {
 			  	$this->move($safe);
 			  	$now = clone end($safe->history);
 			  	$now_col = $now->columnIndex;
@@ -197,7 +197,7 @@ class Game extends Controller
 			  	// $now_col =clone end($safe->history->columnIndex);
 			  	// $now_row =clone end($safe->history->rowIndex);
 			  } while ( 
-			  				  ($now_row != $safe->rowQuantity) &&
+			  				  ($now_row != $safe->rowQuantity) ||
 			  	        ($now_col != $safe->columnQuantity)
 			    );
 				
