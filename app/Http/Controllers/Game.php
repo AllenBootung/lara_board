@@ -28,6 +28,13 @@ class Cord
 	public $columnIndex;
 }
 
+//enemy position
+class Dangerous
+{
+  public $enemies = array();
+  public $lock_area = array();
+}
+
 class Game extends Controller
 {
 		//顯示列表
@@ -61,14 +68,14 @@ class Game extends Controller
       		break;
       }
 
-      //step out of range
+      //step out of map range
       if ( ($step_into->rowIndex < 0) || ($step_into->rowIndex > $safe->rowQuantity) ||
       		 ($step_into->columnIndex < 0) || ($step_into->columnIndex > $safe->columnQuantity)
        ) {
       	return false;
       }
 
-			//check if enter lock area
+			//check if step into lock area
 			for ($i=0; $i < count($safe->lock_area); $i++) { 
 					if ( ($safe->lock_area[$i]->rowIndex == $step_into->rowIndex) &&
 						   ($safe->lock_area[$i]->columnIndex == $step_into->columnIndex) 
@@ -77,7 +84,7 @@ class Game extends Controller
 					}	
 			}
 
-			//check this move in every history
+			//check if this repeat route
 			for ($i=0; $i < count($safe->history); $i++) { 
 					if ( ($safe->history[$i]->rowIndex == $step_into->rowIndex) &&
 						   ($safe->history[$i]->columnIndex == $step_into->columnIndex) 
@@ -88,8 +95,6 @@ class Game extends Controller
 
 			return true;
 		}
-
-		
 
 		//add this movement to safe route or delee
 		public function history($safe, $move_direction)
@@ -159,15 +164,30 @@ class Game extends Controller
 
 		}
 
-		// //after safe route created, place enemy
-		// public function placeEnemies($safe)
-		// {
-		// 		//check if this enemy in range
-		// 		$done = false;
-		// 		do {
+		//after safe route created, place enemy
+		public function placeEnemy($safe, $enemy_area)
+		{
+				$done = false;
 
-		// 		} while (!$done);
-		// }
+        //create enemy
+        $enemy_burn = new Cord();
+        $enemy_burn->rowIndex = rand(0, $safe->rowQuantity-1);
+        $enemy_burn->columnIndex = rand(0, $safe->columnQuantity-1);
+
+        //check if co-worker taken this place
+        do {
+          if (condition) {
+            # code...
+          }
+        } while (!$done);
+
+        //check if this enemy on the way
+				do {
+
+				} while (!$done);
+
+        return $sum;
+		}
 
 		// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 
 		public function showEnemy(Request $request)
@@ -177,18 +197,16 @@ class Game extends Controller
 			$safe->columnQuantity = $request->columnQuantity;
 			$safe->rowQuantity = $request->rowQuantity;
 
-			$done = false;
+			$done = true;
 			do {
 			  
 			  $route = new Cord;
 			  $route->rowIndex = 0;
 			  $route->columnIndex = 0;
 			  $safe->history = [];
-
 			  array_push($safe->history, $route);
-			  
 
-			  //move ↓1 ↑2 →3 ←4 untill (Quantity, Quantity)
+			  //move ↑0 →1 ↓2 ←3 untill (Quantity, Quantity)
 			  do {
 			  	$this->move($safe);
 			  	$now = clone end($safe->history);
@@ -201,12 +219,51 @@ class Game extends Controller
 			  	        ($now_col != $safe->columnQuantity)
 			    );
 				
-				//place enemies  
-			  // for ($i=0; $i < $request->enemyQuantity; $i++) { 
-			  // 	$this->placeEnemies();
-			  // }
+        // expand safe area before place enemies
+        $enemy_area = new Dangerous();
+        foreach ($safe->history as $key => $value) {
+          array_push($enemy_area->lock_area, $safe->history[$key]);
+
+          //expand, check map range
+          //4 directions
+          if ( ($safe->history[$key]->rowIndex-1)>0 ) {
+            $tmp = clone $safe->history[$key];
+            $tmp->rowIndex--;
+            array_push($enemy_area->lock_area, $tmp);
+          } 
+          if ( ($safe->history[$key]->columnIndex-1)>0 ) {
+            $tmp = clone $safe->history[$key];
+            $tmp->columnIndex--;
+            array_push($enemy_area->lock_area, $tmp);
+          }
+          if ( ($safe->history[$key]->rowIndex+1) < $safe->rowQuantity ) {
+            $tmp = clone $safe->history[$key];
+            $tmp->rowIndex++;
+            array_push($enemy_area->lock_area, $tmp);
+          }
+          if ( ($safe->history[$key]->columnIndex+1) < $safe->columnQuantity ) {
+            $tmp = clone $safe->history[$key];
+            $tmp->columnIndex++;
+            array_push($enemy_area->lock_area, $tmp);
+          }
+        } //foreach ($safe->history as $key => $value)
+
+				// place enemies  
+        $enemy_sum = 0;
+        do {
+          $place = $this->placeEnemy($safe, $enemy_area);
+          
+          if ($place <= -1) {
+            //$enemy_sum got -1 means too many enemies
+            //not done, need to re route
+            $done = false;
+          } else {
+            $enemy_sum++;
+          }
+        } while ( ($enemy_sum < $request->enemyQuantity) && ($place > -1) );
+
+			 
 				
-				$done = true;
 			} while (!$done);
 		
 
@@ -222,9 +279,9 @@ class Game extends Controller
 		// 	// 						 ]";
 
 
-			$JSONpostion = json_encode($safe);
+			$JSONpostion = json_encode($enemy_area->lock_area);
 			return $JSONpostion;
-		}
+		}//public function showEnemy(Request $request)
 
 
 
@@ -260,30 +317,5 @@ class Game extends Controller
 
 
 
-
-
-
-		// public function showEnemy(Request $request)
-		// {
-		// 	// $postition = ["foo" => "bar",
-  //  //  								"bar" => "foo"];
-		// 	// $postition = 
-		// 	// 						 [
-		// 	// 						  { 'rowIndex': 2, 'columnIndex': 4},
-		// 	// 						  { 'rowIndex': 2, 'columnIndex': 5}
-		// 	// 						 ];
-
-		// 	$pos = new Cord();
-		// 	$pos->rowIndex = 2;
-		// 	$pos->columnIndex = 2;
-		// 	// $ar[] = $pos;
-		// 	$ar = array();
-		// 	array_push($ar,$pos);
-		// 	$JSONpos = json_encode($ar);
-		// 	return $JSONpos;
-
-		// 	// $JSONpostion = json_encode($postition);
-		// 	// return $JSONpostion;
-		// }
-}
+}//class Game extends Controller
 
