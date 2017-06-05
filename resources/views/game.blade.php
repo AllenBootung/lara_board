@@ -58,7 +58,7 @@ Released under the MIT license: http://jsbin.mit-license.org
     v-on:keyup.right="move('right')"
     v-on:keyup.left="move('left')">
     
-    <div id="grid" style="display: none">
+    <div id="grid">
       <table>
         <tr v-for="rowIndex in + rowQuantity"> 
           <td v-for="columnIndex in + columnQuantity" v-bind:class="{                       'enemy': isEnemy(rowIndex,columnIndex), 'shadow': isShadow(rowIndex,columnIndex),  'start': isStart(rowIndex,columnIndex), 'end': isEnd(rowIndex,columnIndex)}">
