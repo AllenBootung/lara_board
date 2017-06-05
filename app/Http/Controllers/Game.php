@@ -157,7 +157,7 @@ class Game extends Controller
 		{
         //create enemy
 			  //pick space from avalible map
-        if (count($usable_map_cord)<1) {
+        if (count($usable_map_cord)<=1) {
         	return false;
         } else{
 	        $seat = rand(0, count($usable_map_cord));
@@ -221,10 +221,10 @@ class Game extends Controller
 
           //expand, check map range
           //4 directions
-          if ( ($safe->history[$key]->rowIndex-1)>0 ) {
+          if ( ($safe->history[$key]->rowIndex-1)>=0 ) {
             $arr_map[$safe->history[$key]->rowIndex-1][$safe->history[$key]->columnIndex] = -1;
           } 
-          if ( ($safe->history[$key]->columnIndex-1)>0 ) {
+          if ( ($safe->history[$key]->columnIndex-1)>=0 ) {
             $arr_map[$safe->history[$key]->rowIndex][$safe->history[$key]->columnIndex-1] = -1;
           }
           if ( ($safe->history[$key]->rowIndex+1) < $safe->rowQuantity ) {
@@ -241,7 +241,7 @@ class Game extends Controller
         $cnt = 0;
         for ($i=0; $i < $request->rowQuantity; $i++) { 
 			  	for ($j=0; $j < $request->columnQuantity; $j++) { 
-			  		if ($arr_map[$i][$j] == (-1) ){
+			  		if ($arr_map[$i][$j] != (-1) ){
 			  			array_push($usable_map_cord, $cnt);
 			  		}
 
@@ -256,6 +256,7 @@ class Game extends Controller
           
           if (!$place) {
             //$enemy_sum got 0 means too many enemies
+            //or route too complex
             //need to reroute
             $done = false;
           } else {
