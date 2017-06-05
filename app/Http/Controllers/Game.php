@@ -157,13 +157,15 @@ class Game extends Controller
 		{
         //create enemy
 			  //pick space from avalible map
-        if (count($usable_map_cord)<=1) {
+        if (count($usable_map_cord)<1) {
         	return false;
         } else{
-	        $seat = rand(0, count($usable_map_cord));
+	        $seat = rand(0, count($usable_map_cord)-1);
 
-	        array_push($enemy_area->enemies, clone $enemy_area->map[ $usable_map_cord[$seat] ] ) ;
+	        array_push($enemy_area->enemies,  $enemy_area->map[ $usable_map_cord[$seat] ] ) ;
 	        unset($usable_map_cord[$seat]);
+	        $usable_map_cord2= array_values($usable_map_cord);
+          $usable_map_cord = $usable_map_cord2;
         	return true;
 	      }
 
@@ -178,15 +180,15 @@ class Game extends Controller
 			$safe->rowQuantity = $request->rowQuantity;
 
 			$done = true;
+			$route = new Cord;
 			do {
 			  
-			  $route = new Cord;
 			  $route->rowIndex = 0;
 			  $route->columnIndex = 0;
 			  $safe->history = [];
 			  array_push($safe->history, $route);
 
-			  //move ↑0 →1 ↓2 ←3 untill (Quantity, Quantity)
+			  //move untill (Quantity, Quantity)
 			  do {
 			  	$this->move($safe);
 			  	$now = clone end($safe->history);
@@ -263,9 +265,7 @@ class Game extends Controller
             $enemy_sum++;
           }
         } while ( ($enemy_sum < $request->enemyQuantity) && ($place) );
-
 			 
-				
 			} while (!$done);
 		
 
