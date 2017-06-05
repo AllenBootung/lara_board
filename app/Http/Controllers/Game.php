@@ -52,25 +52,25 @@ class Game extends Controller
       $step_into = clone end($safe->history);
       switch ($move_direction) {
       	case 0:
-      		$step_into->rowIndex--;
+      		$step_into->rowIndex++;
       		break;
       	case 1:
       		$step_into->columnIndex++;
       		break;
-      	case 2:
-      		$step_into->rowIndex++;
-      		break;
-      	case 3:
-      		$step_into->columnIndex--;
-      		break;
+      	// case 2:
+      	// 	$step_into->rowIndex++;
+      	// 	break;
+      	// case 3:
+      	// 	$step_into->columnIndex--;
+      	// 	break;
       	default:
       		# code...
       		break;
       }
 
       //step out of map range
-      if ( ($step_into->rowIndex < 0) || ($step_into->rowIndex > $safe->rowQuantity) ||
-      		 ($step_into->columnIndex < 0) || ($step_into->columnIndex > $safe->columnQuantity)
+      if ( ($step_into->rowIndex < 0) || ($step_into->rowIndex >= $safe->rowQuantity) ||
+      		 ($step_into->columnIndex < 0) || ($step_into->columnIndex >= $safe->columnQuantity)
        ) {
       	return false;
       }
@@ -102,17 +102,17 @@ class Game extends Controller
 			$step_into = clone end($safe->history);
       switch ($move_direction) {
       	case 0:
-      		$step_into->rowIndex--;
+      		$step_into->rowIndex++;
       		break;
       	case 1:
       		$step_into->columnIndex++;
       		break;
-      	case 2:
-      		$step_into->rowIndex++;
-      		break;
-      	case 3:
-      		$step_into->columnIndex--;
-      		break;
+      	// case 2:
+      	// 	$step_into->rowIndex++;
+      	// 	break;
+      	// case 3:
+      	// 	$step_into->columnIndex--;
+      	// 	break;
       	case 'go_back':
       		array_push($safe->lock_area, $step_into);
       		array_pop($safe->history);
@@ -132,14 +132,14 @@ class Game extends Controller
 				$false_direction = 0;
 
 				do {
-			  	$move_direction = rand(0,3);
+			  	$move_direction = rand(0,1);
 			  	$go = $this->checkHistory($safe, $move_direction);
 			  	
 			  	if ($go) {
 			  		$this->history($safe, $move_direction);
 			  		$done = true;
 			  	} else {
-			  		$move_direction = ($move_direction+1) % 4;
+			  		$move_direction = ($move_direction+1) % 2;
 			  		$false_direction++;
 			  	}
 
@@ -165,29 +165,29 @@ class Game extends Controller
 		}
 
 		//after safe route created, place enemy
-		public function placeEnemy($safe, $enemy_area)
-		{
-				$done = false;
+		// public function placeEnemy($safe, $enemy_area)
+		// {
+		// 		$done = false;
 
-        //create enemy
-        $enemy_burn = new Cord();
-        $enemy_burn->rowIndex = rand(0, $safe->rowQuantity-1);
-        $enemy_burn->columnIndex = rand(0, $safe->columnQuantity-1);
+  //       //create enemy
+  //       $enemy_burn = new Cord();
+  //       $enemy_burn->rowIndex = rand(0, $safe->rowQuantity-1);
+  //       $enemy_burn->columnIndex = rand(0, $safe->columnQuantity-1);
 
-        //check if co-worker taken this place
-        do {
-          if (condition) {
-            # code...
-          }
-        } while (!$done);
+  //       //check if co-worker taken this place
+  //       do {
+  //         if (condition) {
+  //           # code...
+  //         }
+  //       } while (!$done);
 
-        //check if this enemy on the way
-				do {
+  //       //check if this enemy on the way
+		// 		do {
 
-				} while (!$done);
+		// 		} while (!$done);
 
-        return $sum;
-		}
+  //       return $sum;
+		// }
 
 		// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 
 		public function showEnemy(Request $request)
@@ -215,8 +215,8 @@ class Game extends Controller
 			  	// $now_col =clone end($safe->history->columnIndex);
 			  	// $now_row =clone end($safe->history->rowIndex);
 			  } while ( 
-			  				  ($now_row != $safe->rowQuantity) ||
-			  	        ($now_col != $safe->columnQuantity)
+			  				  ($now_row != $safe->rowQuantity-1) ||
+			  	        ($now_col != $safe->columnQuantity-1)
 			    );
 				
         // expand safe area before place enemies
@@ -249,18 +249,18 @@ class Game extends Controller
         } //foreach ($safe->history as $key => $value)
 
 				// place enemies  
-        $enemy_sum = 0;
-        do {
-          $place = $this->placeEnemy($safe, $enemy_area);
+        // $enemy_sum = 0;
+        // do {
+        //   $place = $this->placeEnemy($safe, $enemy_area);
           
-          if ($place <= -1) {
-            //$enemy_sum got -1 means too many enemies
-            //not done, need to re route
-            $done = false;
-          } else {
-            $enemy_sum++;
-          }
-        } while ( ($enemy_sum < $request->enemyQuantity) && ($place > -1) );
+        //   if ($place <= -1) {
+        //     //$enemy_sum got -1 means too many enemies
+        //     //not done, need to re route
+        //     $done = false;
+        //   } else {
+        //     $enemy_sum++;
+        //   }
+        // } while ( ($enemy_sum < $request->enemyQuantity) && ($place > -1) );
 
 			 
 				
