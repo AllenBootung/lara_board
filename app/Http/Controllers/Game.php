@@ -56,12 +56,12 @@ class Game extends Controller
       	case 1:
       		$step_into->columnIndex++;
       		break;
-      	// case 2:
-      	// 	$step_into->rowIndex--;
-      	// 	break;
-      	// case 3:
-      	// 	$step_into->columnIndex--;
-      	// 	break;
+      	case 2:
+      		$step_into->rowIndex--;
+      		break;
+      	case 3:
+      		$step_into->columnIndex--;
+      		break;
       	default:
       		# code...
       		break;
@@ -70,7 +70,7 @@ class Game extends Controller
       //step out of map range
       if ( ($step_into->rowIndex < 0) || ($step_into->rowIndex >= $safe->rowQuantity) ||
       		 ($step_into->columnIndex < 0) || ($step_into->columnIndex >= $safe->columnQuantity)
-       ) {
+         ) {
       	return false;
       }
 
@@ -98,6 +98,7 @@ class Game extends Controller
 		//add this movement to safe route or delee
 		public function history($safe, $move_direction)
 		{
+      $pushin = true;
 			$step_into = clone end($safe->history);
       switch ($move_direction) {
       	case 0:
@@ -106,32 +107,46 @@ class Game extends Controller
       	case 1:
       		$step_into->columnIndex++;
       		break;
-      	// case 2:
-      	// 	$step_into->rowIndex--;
-      	// 	break;
-      	// case 3:
-      	// 	$step_into->columnIndex--;
-      	// 	break;
+      	case 2:
+      		$step_into->rowIndex--;
+      		break;
+      	case 3:
+      		$step_into->columnIndex--;
+      		break;
       	case 'go_back':
       		array_push($safe->lock_area, $step_into);
       		array_pop($safe->history);
+          $pushin = false;
+          break;
       	default:
       		# code...
       		break;
       }
 
-      array_push($safe->history, $step_into);
+      $pushin && array_push($safe->history, $step_into);
 		}
 
 		//safe route moving
 		public function move($safe)
 		{
-				$safe;
 				$done = false;
 				$false_direction = 0;
 
 				do {
-			  	$move_direction = rand(0,1);
+
+        //   //adjust go back rate
+        //   if ( ( end($safe->history)->rowIndex%3) == 1) {
+        //     $move_direction = rand(0,2);
+        //     ($move_direction==2) && ($move_direction = 3);//go left
+
+        //   } elseif ( ( end($safe->history)->columnIndex%3) == 1) {
+        //     $move_direction = rand(0,2);
+
+        //   } else {
+			  	  // $move_direction = rand(0,1);
+        //   }
+
+          $move_direction = rand(0,1);
 			  	$go = $this->checkHistory($safe, $move_direction);
 			  	
 			  	if ($go) {
@@ -142,18 +157,15 @@ class Game extends Controller
 			  		$false_direction++;
 			  	}
 
-			  	if ($false_direction>=4) {
+			  	if ($false_direction>3) {
 			  		$this->history($safe, "go_back");
 			  	}
-
-				  $done = true;
+				  
 				} while (!$done) ;
-
-
 		}
 
 		// //after safe route created, place enemy
-		public function placeEnemy($enemy_area, $usable_map_cord)
+		public function placeEnemy($enemy_area, &$usable_map_cord)
 		{
         //create enemy
 			  //pick space from avalible map
@@ -171,9 +183,17 @@ class Game extends Controller
 
 		}
 
-		// enemies.php?rowQuantity=7&columnQuantity=7&enemyQuantity=1 
+		// enemies/rowQuantity/7/columnQuantity/7/enemyQuantity/1 
 		public function showEnemy(Request $request)
 		{
+      $v = Validator::make($request->all(), [
+              'rowQuantity' => 'required|min:1',
+              'columnQuantity' => 'required|min:1',
+              'enemyQuantity' => 'required|min:0'
+          ]);
+      // if ($v->fails()) {
+      //     return redirect()->back()->withErrors($v->errors());
+      // }
 			
 			$safe = new Safe();
 			$safe->columnQuantity = $request->columnQuantity;
@@ -186,6 +206,7 @@ class Game extends Controller
 			  $route->rowIndex = 0;
 			  $route->columnIndex = 0;
 			  $safe->history = [];
+        $safe->lock_area = [];
 			  array_push($safe->history, $route);
 
 			  //move untill (Quantity, Quantity)
@@ -194,8 +215,7 @@ class Game extends Controller
 			  	$now = clone end($safe->history);
 			  	$now_col = $now->columnIndex;
 			  	$now_row = $now->rowIndex;
-			  	// $now_col =clone end($safe->history->columnIndex);
-			  	// $now_row =clone end($safe->history->rowIndex);
+			  	
 			  } while ( 
 	  				  ($now_row != $safe->rowQuantity-1) ||
 	  	        ($now_col != $safe->columnQuantity-1)
@@ -203,9 +223,8 @@ class Game extends Controller
 				
 
 			  //build map
-			  // $map = new Dangerous();
         $enemy_area = new Dangerous();
-        $arr_map = array();
+        $arr_map = [];
 			  for ($i=0; $i < $request->rowQuantity; $i++) { 
 			  	for ($j=0; $j < $request->columnQuantity; $j++) { 
 			  		$arr_map[$i][$j] = 0;
@@ -216,13 +235,11 @@ class Game extends Controller
 			  	}
 			  }
 
-
         // expand safe area before place enemies
         foreach ($safe->history as $key => $value) {
           $arr_map[$safe->history[$key]->rowIndex][$safe->history[$key]->columnIndex] = -1;
 
-          //expand, check map range
-          //4 directions
+          //expand, check map range in 4 directions
           if ( ($safe->history[$key]->rowIndex-1)>=0 ) {
             $arr_map[$safe->history[$key]->rowIndex-1][$safe->history[$key]->columnIndex] = -1;
           } 
@@ -238,8 +255,7 @@ class Game extends Controller
         } //foreach ($safe->history as $key => $value)
 
         //list avalible enemy place
-        //map[][]=1 = taken
-        $usable_map_cord = array();
+        $usable_map_cord = [];
         $cnt = 0;
         for ($i=0; $i < $request->rowQuantity; $i++) { 
 			  	for ($j=0; $j < $request->columnQuantity; $j++) { 
@@ -257,22 +273,16 @@ class Game extends Controller
           $place = $this->placeEnemy($enemy_area, $usable_map_cord);
           
           if (!$place) {
-            //$enemy_sum got 0 means too many enemies
-            //or route too complex
-            //need to reroute
+            //dont have enough space
             $done = false;
           } else {
             $enemy_sum++;
           }
         } while ( ($enemy_sum < $request->enemyQuantity) && ($place) );
 			 
-			} while (!$done);
-		
-
+			} while (!$done  );
 			$JSONpostion = json_encode($enemy_area->enemies);
-			// $JSONpostion = json_encode($enemy_area->lock_area);
 			return $JSONpostion;
 		}//public function showEnemy(Request $request)
-
 }//class Game extends Controller
 
