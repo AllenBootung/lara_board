@@ -113,10 +113,10 @@ class Game extends Controller
       	case 3:
       		$step_into->columnIndex--;
       		break;
-      	case 'go_back':
+      	case -1:
       		array_push($safe->lock_area, $step_into);
       		array_pop($safe->history);
-          $pushin = false;
+            $pushin = false;
           break;
       	default:
       		# code...
@@ -131,37 +131,38 @@ class Game extends Controller
 		{
 				$done = false;
 				$false_direction = 0;
+        //$move_direction = rand(0,1);
 
-				do {
-
-        //   //adjust go back rate
-        //   if ( ( end($safe->history)->rowIndex%3) == 1) {
-        //     $move_direction = rand(0,2);
-        //     ($move_direction==2) && ($move_direction = 3);//go left
-
-        //   } elseif ( ( end($safe->history)->columnIndex%3) == 1) {
-        //     $move_direction = rand(0,2);
-
-        //   } else {
-			  	  // $move_direction = rand(0,1);
-        //   }
-
+        //adjust go back rate
+        if ( ( end($safe->history)->rowIndex % 5 ) == 1) {
+          $move_direction = rand(0,2);
+          ($move_direction==2) && ($move_direction = 3);//go left
+ 
+        } elseif ( ( end($safe->history)->columnIndex%3) == 1) {
+          $move_direction = rand(0,2);
+ 
+        } else {
           $move_direction = rand(0,1);
-			  	$go = $this->checkHistory($safe, $move_direction);
-			  	
-			  	if ($go) {
-			  		$this->history($safe, $move_direction);
-			  		$done = true;
-			  	} else {
-			  		$move_direction = ($move_direction+1) % 2;
-			  		$false_direction++;
-			  	}
+        }
 
-			  	if ($false_direction>3) {
-			  		$this->history($safe, "go_back");
-			  	}
-				  
-				} while (!$done) ;
+        //save route to history
+        do {
+            $go = $this->checkHistory($safe, $move_direction);
+
+            if ($go) {
+              $this->history($safe, $move_direction);
+              $done = true;
+            } else {
+              $move_direction = ($move_direction+1) % 4;
+              $false_direction++;
+            }
+
+            if ($false_direction>3) {
+              $this->history($safe, -1);
+              $false_direction = 0;
+              $move_direction = rand(0,3);
+            }
+        } while (!$done) ;
 		}
 
 		// //after safe route created, place enemy
@@ -281,6 +282,7 @@ class Game extends Controller
         } while ( ($enemy_sum < $request->enemyQuantity) && ($place) );
 			 
 			} while (!$done  );
+      
 			$JSONpostion = json_encode($enemy_area->enemies);
 			return $JSONpostion;
 		}//public function showEnemy(Request $request)
