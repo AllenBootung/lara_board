@@ -33,7 +33,7 @@
                 <div class="panel-heading">
                     <input type="button" class="btn btn-success btn-xs btn_edit" value="編">
                     <input type="button" class="btn btn-danger btn-xs btn_del" value="刪">
-                    {{ $result->REPLY_TIME}}
+                    {{ $result->created_at}}
                 </div>
                 
                 <div class="panel-body" id="REPLY_MESSAGE">{!! nl2br(e($result->REPLY_MESSAGE)) !!}</div>

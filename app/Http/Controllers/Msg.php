@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use App\Models;
+use App\Models\MsgReply;
+use App\Models\MsgList;
+
 
 use DB;
 use View;
@@ -16,22 +20,22 @@ class Msg extends Controller
 		//顯示列表
     public function showMsgList()
     {
-    	$results = DB::table('msg_list')
-    	             ->select( 'msg_list.MSG_NO', 
+    	$results = DB::table('msg_lists')
+    	             ->select( 'msg_lists.MSG_NO', 
     	             					 'MSG_TITLE',
-    	             					 'MSG_TIME', 
-    	             					 'msg_list.PERSON_NO', 
-    	             					 DB::raw('COUNT(msg_reply.REPLY_NO) as REPLY_COUNT'),
- 														 DB::raw('MAX(msg_reply.REPLY_TIME) as REPLY_TIME'),
+    	             					 'msg_lists.created_at', 
+    	             					 'msg_lists.PERSON_NO', 
+    	             					 DB::raw('COUNT(msg_replies.REPLY_NO) as REPLY_COUNT'),
+ 														 DB::raw('MAX(msg_replies.created_at) as reply_created_at'),
  														 DB::raw('(SELECT REPLY_MESSAGE
- 														 	          FROM msg_reply
- 														 	         WHERE msg_list.MSG_NO = msg_reply.MSG_NO
+ 														 	          FROM msg_replies
+ 														 	         WHERE msg_lists.MSG_NO = msg_replies.MSG_NO
  														 	         LIMIT 1 )FIRST_MESSAGE
  														 				')  	 
     	             					)
-    	             ->leftjoin('msg_reply', 'msg_list.MSG_NO', '=', 'msg_reply.MSG_NO')
-    	             ->groupBy('msg_list.MSG_NO')
-                   ->orderBy('msg_list.MSG_NO')
+    	             ->leftjoin('msg_replies', 'msg_lists.MSG_NO', '=', 'msg_replies.MSG_NO')
+    	             ->groupBy('msg_lists.MSG_NO')
+                   ->orderBy('msg_lists.MSG_NO')
     	             ->paginate(5)
     	             ;
                    
@@ -54,7 +58,7 @@ class Msg extends Controller
 		    $msg_title = $request->input('MSG_TITLE');
 		    $msg_no = $request->input('MSG_NO');
 		
-		    DB::table('msg_list')
+		    DB::table('msg_lists')
 		      ->where('MSG_NO', $msg_no)
 		      ->update( ['MSG_TITLE' => $msg_title]
 		      				)
@@ -74,13 +78,13 @@ class Msg extends Controller
   	    $msg_no = $request->input('MSG_NO');
 
   	    //刪除所有回應
-  	    DB::table('msg_reply')
+  	    DB::table('msg_replies')
   	      ->where('MSG_NO', $msg_no)
   	      ->delete()
   	      ;
 
   			//刪除議題
-  	    DB::table('msg_list')
+  	    DB::table('msg_lists')
   	      ->where('MSG_NO', $msg_no)
   	      ->delete()
   	      ;
@@ -100,15 +104,15 @@ class Msg extends Controller
 		//留言版顯示
 		public function showMsgDetail($id)
 		{
-			$results = DB::table('msg_reply')
-		               ->select( 'msg_reply.REPLY_NO', 
+			$results = DB::table('msg_replies')
+		               ->select( 'msg_replies.REPLY_NO', 
 		               					 'REPLY_MESSAGE', 
-		               					 'REPLY_TIME', 
-		               					 'msg_reply.PERSON_NO' , 
-		               					 'msg_list.MSG_TITLE') 
-		               ->leftjoin('msg_list', 'msg_reply.MSG_NO' , '=', 'msg_list.MSG_NO')
-		               ->where('msg_reply.MSG_NO', '=', $id)
-                   ->orderBy('msg_reply.REPLY_NO')
+		               					 'msg_replies.created_at', 
+		               					 'msg_replies.PERSON_NO' , 
+		               					 'msg_lists.MSG_TITLE') 
+		               ->leftjoin('msg_lists', 'msg_replies.MSG_NO' , '=', 'msg_lists.MSG_NO')
+		               ->where('msg_replies.MSG_NO', '=', $id)
+                   ->orderBy('msg_replies.REPLY_NO')
 		               ->paginate(5); 
 		  
 		  if ($id=="add") { //當網址是/add時新增議題，於前端顯示title輸入框
@@ -136,7 +140,7 @@ class Msg extends Controller
 		      $msg_title = $request->input('MSG_TITLE');
 
 		      //get last MSG_NO
-		      $results = DB::table('msg_list')
+		      $results = DB::table('msg_lists')
 		                   ->select('MSG_NO')
 		                   ->orderBy('MSG_NO', 'desc')->first();
 		      if ($results) 
@@ -145,20 +149,20 @@ class Msg extends Controller
 		        $msg_no = 1;
 
 		      //新增標題
-		      DB::table('msg_list')
+		      DB::table('msg_lists')
 		        ->insert( ['MSG_TITLE' => $msg_title ,
 		                   'PERSON_NO' => '1' ,
-		                   'MSG_TIME' => date("Y-m-d H:i:s")
+		                   'created_at' => date("Y-m-d H:i:s")
 		                  ]
 		                );
 		    
 		    	//新增回應
 		      $reply_message = $request->input('REPLY_MESSAGE');
-		      DB::table('msg_reply')
+		      DB::table('msg_replies')
 		        ->insert( ['REPLY_MESSAGE' => $reply_message ,
 		                   'MSG_NO' => $msg_no ,
 		                   'PERSON_NO' => '1' ,
-		                   'REPLY_TIME' => date("Y-m-d H:i:s")
+		                   'created_at' => date("Y-m-d H:i:s")
 		                  ] 
 		                );
 
@@ -177,11 +181,11 @@ class Msg extends Controller
 				  
 			    $reply_message = $request->input('REPLY_MESSAGE');
 			    
-			    DB::table('msg_reply')
+			    DB::table('msg_replies')
 			      ->insert( ['REPLY_MESSAGE' => $reply_message ,
 			      	         'MSG_NO' => $id ,
 			      	         'PERSON_NO' => '1' ,
-			      	         'REPLY_TIME' => date("Y-m-d H:i:s")
+			      	         'created_at' => date("Y-m-d H:i:s")
 			      	        ] 
 			      				);
 			    $msg = "回覆成功";
@@ -201,10 +205,10 @@ class Msg extends Controller
   		    
   		    $reply_no = $request->input('REPLY_NO');
   		
-  		    DB::table('msg_reply')
+  		    DB::table('msg_replies')
   		      ->where('REPLY_NO', $reply_no)
   		      ->update( ['REPLY_MESSAGE' => $reply_message,
-  		      					 'REPLY_TIME'	=> date("Y-m-d H:i:s")
+  		      					 'created_at'	=> date("Y-m-d H:i:s")
   		      					]
   		      				)
   		      ;
@@ -222,10 +226,11 @@ class Msg extends Controller
 	    		if ( $request->has('REPLY_NO')  ) {
 	    	    $reply_no = $request->input('REPLY_NO');
 	    	
-	    	    DB::table('msg_reply')
-	    	      ->where('REPLY_NO', $reply_no)
-	    	      ->delete()
-	    	      ;
+	    	    // DB::table('msg_replies')
+	    	    //   ->where('REPLY_NO', $reply_no)
+	    	    //   ->delete()
+	    	    //   ;
+            $post = MsgReply::destroy($reply_no);
 	    		}
 	      } 
 

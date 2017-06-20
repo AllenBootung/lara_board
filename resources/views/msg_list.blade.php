@@ -31,11 +31,11 @@
                                 <input type="button" class="btn btn-success btn-xs btn_edit" value="編">
                                 <input type="button" class="btn btn-danger btn-xs btn_del" value="刪">
                             </td>
-                            <td>{{$result->MSG_TIME}}</td>
+                            <td>{{$result->created_at}}</td>
                             <td class="align-left cut-td" id="MSG_TITLE" style="overflow:hidden;"><a href="msg/{{$result->MSG_NO}}">{{$result->MSG_TITLE}}</a></td>
                             <td class="align-left cut-td" style="max-width:150px">{{$result->FIRST_MESSAGE}}</td>
                             <td>{{$result->REPLY_COUNT}}</td>
-                            <td>{{$result->REPLY_TIME}}</td>
+                            <td>{{$result->reply_created_at}}</td>
                           </tr>
                         @endforeach
                       </tbody>
