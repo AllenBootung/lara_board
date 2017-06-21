@@ -225,12 +225,7 @@ class Msg extends Controller
 	    		}
 	    		if ( $request->has('REPLY_NO')  ) {
 	    	    $reply_no = $request->input('REPLY_NO');
-	    	
-	    	    // DB::table('msg_replies')
-	    	    //   ->where('REPLY_NO', $reply_no)
-	    	    //   ->delete()
-	    	    //   ;
-            $post = MsgReply::destroy($reply_no);
+	    	    MsgReply::destroy($reply_no);
 	    		}
 	      } 
 

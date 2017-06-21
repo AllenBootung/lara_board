@@ -12,4 +12,5 @@ class MsgList extends Model
       
     ];
     protected $primaryKey = "MSG_NO";
+    protected $table = 'msg_lists';
 }
